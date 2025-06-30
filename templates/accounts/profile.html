@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - HelaCredit{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>User Profile
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Profile functionality will be implemented here.</p>
+                    <a href="{% url 'loans:dashboard' %}" class="btn btn-primary">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

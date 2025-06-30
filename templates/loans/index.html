@@ -1,0 +1,461 @@
+{% extends 'base.html' %}
+
+{% block title %}HelaCredit - Fast & Secure Loans{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    <div class="text-carousel">
+                        <div class="carousel-slide active" data-index="0">
+                            <span class="carousel-text">Borrow Upto Ksh 50,000</span>
+                        </div>
+                        <div class="carousel-slide" data-index="1">
+                            <span class="carousel-text">Fast Approval in 24 Hours</span>
+                        </div>
+                        <div class="carousel-slide" data-index="2">
+                            <span class="carousel-text">Competitive Rates from 8%</span>
+                        </div>
+                        <div class="carousel-slide" data-index="3">
+                            <span class="carousel-text">Secure & Transparent Process</span>
+                        </div>
+                    </div>
+                </h1>
+                <p class="lead mb-4">HelaCredit provides fast, secure, and reliable loan services with competitive interest rates and flexible repayment terms.</p>
+                {% if not user.is_authenticated %}
+                <div class="d-flex gap-3">
+                    <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+                {% else %}
+                <a href="{% url 'loans:apply_loan' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-credit-card me-2"></i>Apply Now
+                </a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-icon-container">
+                    <i class="fas fa-dollar-sign hero-icon"></i>
+                    <div class="icon-glow"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold">How It Works</h2>
+                <p class="lead text-muted">Simple steps to get your loan</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <span class="fw-bold fs-4">1</span>
+                    </div>
+                    <h5>Register</h5>
+                    <p class="text-muted">Create your account in minutes with basic information</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <span class="fw-bold fs-4">2</span>
+                    </div>
+                    <h5>Apply</h5>
+                    <p class="text-muted">Fill out the loan application with your details and requirements</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <span class="fw-bold fs-4">3</span>
+                    </div>
+                    <h5>Get Approved</h5>
+                    <p class="text-muted">Our team reviews your application and approves within hours</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <span class="fw-bold fs-4">4</span>
+                    </div>
+                    <h5>Receive Money</h5>
+                    <p class="text-muted">Get your loan disbursed directly to your M-Pesa or bank account</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Loan Calculator Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Loan Calculator</h2>
+                <p class="text-muted mb-4">Calculate your monthly payments and total interest before applying</p>
+                
+                <form id="loanCalculator">
+                    <div class="mb-3">
+                        <label for="loanAmount" class="form-label">Loan Amount (KES)</label>
+                        <input type="number" class="form-control" id="loanAmount" min="1000" step="100" value="50000">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="loanPeriod" class="form-label">Repayment Period (Months)</label>
+                        <select class="form-control" id="loanPeriod">
+                            <option value="6">6 months</option>
+                            <option value="12" selected>12 months</option>
+                            <option value="18">18 months</option>
+                            <option value="24">24 months</option>
+                            <option value="36">36 months</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calculator me-2"></i>Calculate
+                    </button>
+                </form>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Loan Summary</h5>
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <div class="stats-card">
+                                    <h6>Monthly Payment</h6>
+                                    <h4 id="monthlyPayment">KES 0</h4>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="stats-card">
+                                    <h6>Total Interest</h6>
+                                    <h4 id="totalInterest">KES 0</h4>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="stats-card">
+                                    <h6>Total Amount</h6>
+                                    <h4 id="totalAmount">KES 0</h4>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="stats-card">
+                                    <h6>Interest Rate</h6>
+                                    <h4>15%</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('loanCalculator').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const amount = document.getElementById('loanAmount').value;
+    const period = document.getElementById('loanPeriod').value;
+    
+    // Simple loan calculation (15% annual interest rate)
+    const annualRate = 0.15;
+    const monthlyRate = annualRate / 12;
+    const principal = parseFloat(amount);
+    const months = parseInt(period);
+    
+    if (monthlyRate === 0) {
+        const monthlyPayment = principal / months;
+        const totalInterest = 0;
+        const totalAmount = principal;
+        
+        updateResults(monthlyPayment, totalInterest, totalAmount);
+    } else {
+        const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        const totalAmount = monthlyPayment * months;
+        const totalInterest = totalAmount - principal;
+        
+        updateResults(monthlyPayment, totalInterest, totalAmount);
+    }
+});
+
+function updateResults(monthlyPayment, totalInterest, totalAmount) {
+    document.getElementById('monthlyPayment').textContent = 'KES ' + monthlyPayment.toFixed(2);
+    document.getElementById('totalInterest').textContent = 'KES ' + totalInterest.toFixed(2);
+    document.getElementById('totalAmount').textContent = 'KES ' + totalAmount.toFixed(2);
+}
+
+// Calculate on page load
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('loanCalculator').dispatchEvent(new Event('submit'));
+    
+    // Modern Text Carousel Animation
+    const carousel = document.querySelector('.text-carousel');
+    const slides = document.querySelectorAll('.carousel-slide');
+    let currentSlide = 0;
+    const slideInterval = 3000; // 3 seconds per slide
+    
+    function nextSlide() {
+        // Remove active class from current slide
+        slides[currentSlide].classList.remove('active');
+        
+        // Move to next slide
+        currentSlide = (currentSlide + 1) % slides.length;
+        
+        // Add active class to new slide
+        slides[currentSlide].classList.add('active');
+    }
+    
+    // Start the carousel
+    setInterval(nextSlide, slideInterval);
+    
+    // Add hover pause functionality
+    let carouselPaused = false;
+    
+    carousel.addEventListener('mouseenter', () => {
+        carouselPaused = true;
+        carousel.style.animationPlayState = 'paused';
+    });
+    
+    carousel.addEventListener('mouseleave', () => {
+        carouselPaused = false;
+        carousel.style.animationPlayState = 'running';
+    });
+    
+    // Add click to manually advance
+    carousel.addEventListener('click', () => {
+        nextSlide();
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Dynamic Hero Icon Styles */
+.hero-icon-container {
+    position: relative;
+    display: inline-block;
+    margin: 2rem 0;
+}
+
+.hero-icon {
+    font-size: 8rem;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 3;
+    animation: dollarFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+}
+
+.icon-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 1;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes dollarFloat {
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-15px); 
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% { 
+        opacity: 0.6; 
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+/* Hover effects */
+.hero-icon-container:hover .hero-icon {
+    animation: dollarFloat 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.5));
+}
+
+.hero-icon-container:hover .icon-glow {
+    animation: glowPulse 1s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-icon {
+        font-size: 6rem;
+    }
+    
+    .icon-glow {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+/* Modern Text Carousel Styles */
+.text-carousel {
+    position: relative;
+    height: 170px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.carousel-text {
+    background: linear-gradient(45deg, #ffffff, #f8f9fa, #e9ecef, #ffffff);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease-in-out infinite;
+    font-weight: 700;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.carousel-text::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    border-radius: 10px;
+    z-index: -1;
+    animation: textGlow 3s ease-in-out infinite;
+}
+
+/* Carousel indicators */
+.text-carousel::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    border-radius: 2px;
+    animation: indicatorPulse 2s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { 
+        background-position: 0% 50%; 
+    }
+    50% { 
+        background-position: 100% 50%; 
+    }
+}
+
+@keyframes textGlow {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: scale(1.05);
+    }
+}
+
+@keyframes indicatorPulse {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: translateX(-50%) scaleX(0.8);
+    }
+    50% { 
+        opacity: 1; 
+        transform: translateX(-50%) scaleX(1.2);
+    }
+}
+
+/* Enhanced hover effects */
+.text-carousel:hover {
+    transform: scale(1.02);
+}
+
+.text-carousel:hover .carousel-slide.active {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.text-carousel:hover .carousel-text {
+    animation: gradientShift 2s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .text-carousel {
+        height: 140px;
+    }
+    
+    .carousel-slide {
+        padding: 15px;
+    }
+    
+    .carousel-text {
+        font-size: 1.5rem;
+    }
+}
+</style>
+{% endblock %} 

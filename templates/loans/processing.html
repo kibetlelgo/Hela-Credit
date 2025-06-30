@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block title %}Processing Application - HelaCredit{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center">
+                <!-- Animated Clock -->
+                <div class="processing-clock mb-4">
+                    <div class="clock-face">
+                        <div class="clock-center"></div>
+                        <div class="hour-hand"></div>
+                        <div class="minute-hand"></div>
+                        <div class="second-hand"></div>
+                    </div>
+                </div>
+
+                <!-- Processing Message -->
+                <div class="processing-content">
+                    <h1 class="fw-bold mb-3">Processing Your Application</h1>
+                    <p class="lead text-muted mb-4">
+                        Please wait while we review your loan application. This usually takes 24-48 hours.
+                    </p>
+                    
+                    <!-- Application Details -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-file-alt me-2"></i>Application Summary
+                            </h5>
+                            <div class="row text-center">
+                                <div class="col-md-4 mb-3">
+                                    <div class="processing-info">
+                                        <h6 class="text-muted">Application ID</h6>
+                                        <p class="fw-bold">{{ loan.application_id|truncatechars:12 }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="processing-info">
+                                        <h6 class="text-muted">Loan Amount</h6>
+                                        <p class="fw-bold text-primary">KES {{ loan.requested_amount|floatformat:2 }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="processing-info">
+                                        <h6 class="text-muted">Status</h6>
+                                        <span class="badge bg-warning">{{ loan.get_status_display }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-tasks me-2"></i>Application Progress
+                            </h5>
+                            <div class="progress-steps">
+                                <div class="step completed">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Application Submitted</h6>
+                                        <small class="text-muted">{{ loan.submitted_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                </div>
+                                <div class="step completed">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Service Fee Paid</h6>
+                                        <small class="text-muted">Payment confirmed</small>
+                                    </div>
+                                </div>
+                                <div class="step active">
+                                    <div class="step-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Under Review</h6>
+                                        <small class="text-muted">Currently processing</small>
+                                    </div>
+                                </div>
+                                <div class="step pending">
+                                    <div class="step-icon">
+                                        <i class="fas fa-hourglass-half"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Decision</h6>
+                                        <small class="text-muted">Approval or rejection</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'loans:dashboard' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{% url 'loans:loan_details' loan.application_id %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-eye me-2"></i>View Application
+                        </a>
+                    </div>
+
+                    <!-- Information Alert -->
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>What happens next?</strong> Our team will review your application and contact you within 24-48 hours. 
+                        You'll receive an email notification once a decision has been made.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Processing Clock Styles */
+.processing-clock {
+    display: inline-block;
+    margin: 2rem auto;
+}
+
+.clock-face {
+    width: 200px;
+    height: 200px;
+    border: 8px solid #007bff;
+    border-radius: 50%;
+    position: relative;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+}
+
+.clock-center {
+    width: 12px;
+    height: 12px;
+    background: #007bff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.hour-hand {
+    width: 4px;
+    height: 60px;
+    background: #333;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    border-radius: 2px;
+    animation: hourRotate 12s linear infinite;
+}
+
+.minute-hand {
+    width: 3px;
+    height: 80px;
+    background: #666;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    border-radius: 2px;
+    animation: minuteRotate 6s linear infinite;
+}
+
+.second-hand {
+    width: 2px;
+    height: 90px;
+    background: #007bff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%) rotate(0deg);
+    border-radius: 1px;
+    animation: secondRotate 1s linear infinite;
+}
+
+@keyframes hourRotate {
+    from { transform: translate(-50%, -100%) rotate(0deg); }
+    to { transform: translate(-50%, -100%) rotate(360deg); }
+}
+
+@keyframes minuteRotate {
+    from { transform: translate(-50%, -100%) rotate(0deg); }
+    to { transform: translate(-50%, -100%) rotate(360deg); }
+}
+
+@keyframes secondRotate {
+    from { transform: translate(-50%, -100%) rotate(0deg); }
+    to { transform: translate(-50%, -100%) rotate(360deg); }
+}
+
+/* Progress Steps Styles */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 2rem 0;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: #e9ecef;
+    z-index: 1;
+}
+
+.step.completed:not(:last-child)::after {
+    background: #28a745;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.step.completed .step-icon {
+    background: #28a745;
+    color: white;
+}
+
+.step.active .step-icon {
+    background: #007bff;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.step.pending .step-icon {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
+}
+
+.step-content h6 {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.step-content small {
+    font-size: 0.8rem;
+}
+
+/* Processing Info Styles */
+.processing-info {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.processing-info h6 {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.processing-info p {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .clock-face {
+        width: 150px;
+        height: 150px;
+        border-width: 6px;
+    }
+    
+    .hour-hand { height: 45px; }
+    .minute-hand { height: 60px; }
+    .second-hand { height: 67px; }
+    
+    .progress-steps {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .step:not(:last-child)::after {
+        display: none;
+    }
+}
+</style>
+{% endblock %} 

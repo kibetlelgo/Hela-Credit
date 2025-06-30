@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Loan Application - HelaCredit{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold">Edit Loan Application</h1>
+                    <p class="text-muted">Application ID: {{ loan.application_id }}</p>
+                </div>
+                <div>
+                    <a href="{% url 'loans:loan_details' loan.application_id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Edit Application Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                    <i class="fas fa-phone me-1"></i>Phone Number *
+                                </label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.phone_number.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.id_number.id_for_label }}" class="form-label">
+                                    <i class="fas fa-id-card me-1"></i>ID Number *
+                                </label>
+                                {{ form.id_number }}
+                                {% if form.id_number.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.id_number.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.gender.id_for_label }}" class="form-label">
+                                    <i class="fas fa-venus-mars me-1"></i>Gender *
+                                </label>
+                                {{ form.gender }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.gender.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Date of Birth *
+                                </label>
+                                {{ form.date_of_birth }}
+                                {% if form.date_of_birth.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.date_of_birth.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.marital_status.id_for_label }}" class="form-label">
+                                    <i class="fas fa-heart me-1"></i>Marital Status *
+                                </label>
+                                {{ form.marital_status }}
+                                {% if form.marital_status.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.marital_status.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.county.id_for_label }}" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-1"></i>County *
+                                </label>
+                                {{ form.county }}
+                                {% if form.county.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.county.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.requested_amount.id_for_label }}" class="form-label">
+                                    <i class="fas fa-money-bill-wave me-1"></i>Requested Amount (KES) *
+                                </label>
+                                {{ form.requested_amount }}
+                                {% if form.requested_amount.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.requested_amount.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.repayment_period.id_for_label }}" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>Repayment Period (Months) *
+                                </label>
+                                {{ form.repayment_period }}
+                                {% if form.repayment_period.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.repayment_period.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Application
+                            </button>
+                            <a href="{% url 'loans:loan_details' loan.application_id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

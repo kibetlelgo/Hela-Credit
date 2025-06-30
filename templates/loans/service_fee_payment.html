@@ -1,0 +1,404 @@
+{% extends 'base.html' %}
+
+{% block title %}Service Fee Payment - HelaCredit{% endblock %}
+
+{% block content %}
+<!-- Notification Container -->
+<div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050; pointer-events: none;">
+    <!-- Notifications will be dynamically added here -->
+</div>
+
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold">Service Fee Payment</h1>
+                    <p class="text-muted">Application ID: {{ loan.application_id }}</p>
+                </div>
+                <div>
+                    <a href="{% url 'loans:loan_details' loan.application_id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Information -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-credit-card me-2"></i>Payment Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="payment-info">
+                                <h6 class="text-muted">Loan Amount</h6>
+                                <h4 class="text-primary">KES {{ loan.requested_amount|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="payment-info">
+                                <h6 class="text-muted">Service Fee</h6>
+                                <h4 class="text-warning">KES {{ service_fee|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="payment-info">
+                                <h6 class="text-muted">Amount to be Disbursed</h6>
+                                <h4 class="text-success">KES {{ loan.requested_amount|floatformat:2 }}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="payment-info">
+                                <h6 class="text-muted">Repayment Period</h6>
+                                <h4>{{ loan.repayment_period }} months</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-mobile-alt me-2"></i>M-Pesa Payment
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-mobile-alt text-success mb-3" style="font-size: 3rem;"></i>
+                        <h5>Pay via M-Pesa</h5>
+                        <p class="text-muted">Send KES {{ service_fee|floatformat:2 }} to our till number</p>
+                    </div>
+                    
+                    <div class="mpesa-details mb-4">
+                        <div class="text-center">
+                            <h6 class="text-muted mb-2">Till Number</h6>
+                            <div class="till-number">
+                                <h3 class="fw-bold text-primary">{{ mpesa_till }}</h3>
+                                <button class="btn btn-outline-primary btn-sm mt-2" onclick="copyToClipboard('{{ mpesa_till }}')">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-steps">
+                        <h6 class="mb-3">Payment Steps:</h6>
+                        <ol class="list-unstyled">
+                            <li class="mb-2">
+                                <span class="badge bg-primary me-2">1</span>
+                                Go to M-Pesa menu
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-primary me-2">2</span>
+                                Select "Lipa na M-Pesa"
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-primary me-2">3</span>
+                                Enter till number: <strong>{{ mpesa_till }}</strong>
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-primary me-2">4</span>
+                                Enter amount: <strong>KES {{ service_fee|floatformat:2 }}</strong>
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-primary me-2">5</span>
+                                Enter your M-Pesa PIN
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-primary me-2">6</span>
+                                Confirm payment
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Code Form -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>Confirm Payment
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="{{ form.mpesa_transaction_code.id_for_label }}" class="form-label">
+                                        <strong>M-Pesa Transaction Code</strong>
+                                    </label>
+                                    {{ form.mpesa_transaction_code }}
+                                    {% if form.mpesa_transaction_code.help_text %}
+                                        <div class="form-text">{{ form.mpesa_transaction_code.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.mpesa_transaction_code.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.mpesa_transaction_code.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Important:</strong> You will receive an M-Pesa confirmation message with a transaction code. 
+                                    Enter that code above to confirm your payment and proceed with your loan application.
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-check me-2"></i>Confirm Payment & Continue
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-exclamation-triangle me-2"></i>Note:</h6>
+                                <ul class="mb-0">
+                                    <li>Payment must be completed to proceed</li>
+                                    <li>Transaction code is required</li>
+                                    <li>Application will be reviewed after payment</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-info {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 1rem;
+}
+
+.till-number {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+}
+
+.payment-steps li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.payment-steps li:last-child {
+    border-bottom: none;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+/* Notification Styles */
+.notification {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    max-width: 300px;
+    border-left: 4px solid #28a745;
+    animation: slideInRight 0.3s ease-out;
+    pointer-events: auto;
+}
+
+.notification.success {
+    border-left-color: #28a745;
+}
+
+.notification.info {
+    border-left-color: #17a2b8;
+}
+
+.notification.warning {
+    border-left-color: #ffc107;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification.fade-out {
+    animation: slideOutRight 0.3s ease-in forwards;
+}
+</style>
+
+<script>
+// Dummy loan activity notifications
+const notifications = [
+    {
+        message: "+254***456 has borrowed KES 25,000",
+        time: "2 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***789 has borrowed KES 15,000",
+        time: "3 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***234 has borrowed KES 35,000",
+        time: "5 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***567 has borrowed KES 20,000",
+        time: "7 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***890 has borrowed KES 30,000",
+        time: "10 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***123 has borrowed KES 40,000",
+        time: "12 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***345 has borrowed KES 18,000",
+        time: "15 minutes ago",
+        type: "success"
+    },
+    {
+        message: "+254***678 has borrowed KES 22,000",
+        time: "18 minutes ago",
+        type: "success"
+    }
+];
+
+let notificationIndex = 0;
+
+function createNotification(message, time, type = 'success') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    notification.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <div class="fw-bold" style="font-size: 0.9rem;">${message}</div>
+                <small class="text-muted">${time}</small>
+            </div>
+            <button type="button" class="btn-close btn-close-sm" onclick="removeNotification(this.parentElement.parentElement)"></button>
+        </div>
+    `;
+    
+    container.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+    
+    return notification;
+}
+
+function removeNotification(notification) {
+    notification.classList.add('fade-out');
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 300);
+}
+
+function showRandomNotification() {
+    if (notificationIndex < notifications.length) {
+        const notification = notifications[notificationIndex];
+        createNotification(notification.message, notification.time, notification.type);
+        notificationIndex++;
+    } else {
+        // Reset and start over
+        notificationIndex = 0;
+        const notification = notifications[notificationIndex];
+        createNotification(notification.message, notification.time, notification.type);
+        notificationIndex++;
+    }
+}
+
+// Show first notification after 2 seconds
+setTimeout(() => {
+    showRandomNotification();
+}, 2000);
+
+// Show subsequent notifications every 8-15 seconds
+setInterval(() => {
+    showRandomNotification();
+}, Math.random() * 7000 + 8000); // Random interval between 8-15 seconds
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show a temporary success message
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        button.classList.remove('btn-outline-primary');
+        button.classList.add('btn-success');
+        
+        setTimeout(function() {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-primary');
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
+{% endblock %} 

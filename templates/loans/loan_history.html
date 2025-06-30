@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+
+{% block title %}Loan History - HelaCredit{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold">Loan History</h1>
+                    <p class="text-muted">Track all your loan applications and their status</p>
+                </div>
+                <div>
+                    <a href="{% url 'loans:dashboard' %}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    <a href="{% url 'loans:apply_loan' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Apply for New Loan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-file-alt text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h4 class="text-primary">{{ total_loans }}</h4>
+                    <p class="text-muted mb-0">Total Applications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-money-bill-wave text-success mb-3" style="font-size: 2rem;"></i>
+                    <h4 class="text-success">KES {{ total_requested|floatformat:0 }}</h4>
+                    <p class="text-muted mb-0">Total Requested</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-check-circle text-info mb-3" style="font-size: 2rem;"></i>
+                    <h4 class="text-info">KES {{ total_approved|floatformat:0 }}</h4>
+                    <p class="text-muted mb-0">Total Approved</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-clock text-warning mb-3" style="font-size: 2rem;"></i>
+                    <h4 class="text-warning">{{ status_counts.approved|default:0 }}</h4>
+                    <p class="text-muted mb-0">Active Loans</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-filter me-2"></i>Filters & Search
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                {% for status_code, status_label in status_choices %}
+                                    <option value="{{ status_code }}" {% if status_filter == status_code %}selected{% endif %}>
+                                        {{ status_label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="date" class="form-label">Date Range</label>
+                            <select name="date" id="date" class="form-select">
+                                <option value="">All Time</option>
+                                <option value="this_month" {% if date_filter == 'this_month' %}selected{% endif %}>This Month</option>
+                                <option value="last_month" {% if date_filter == 'last_month' %}selected{% endif %}>Last Month</option>
+                                <option value="this_year" {% if date_filter == 'this_year' %}selected{% endif %}>This Year</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-search me-2"></i>Apply Filters
+                            </button>
+                            <a href="{% url 'loans:loan_history' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Clear
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Summary -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Status Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for status in status_data %}
+                            <div class="col-md-2 col-sm-4 col-6 mb-3">
+                                <div class="status-summary-card text-center p-3 rounded">
+                                    <h6 class="mb-1">{{ status.label }}</h6>
+                                    <h4 class="mb-0 status-count-{{ status.code }}">{{ status.count }}</h4>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Applications List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Loan Applications
+                    </h5>
+                    <span class="badge bg-primary">{{ loans.count }} application{{ loans.count|pluralize }}</span>
+                </div>
+                <div class="card-body">
+                    {% if loans %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Application ID</th>
+                                        <th>Amount</th>
+                                        <th>Period</th>
+                                        <th>Status</th>
+                                        <th>Date Applied</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for loan in loans %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ loan.application_id|truncatechars:12 }}</strong>
+                                                <br>
+                                                <small class="text-muted">{{ loan.id_number }}</small>
+                                            </td>
+                                            <td>
+                                                <strong>KES {{ loan.requested_amount|floatformat:0 }}</strong>
+                                                {% if loan.approved_amount %}
+                                                    <br>
+                                                    <small class="text-success">Approved: KES {{ loan.approved_amount|floatformat:0 }}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ loan.repayment_period }} months
+                                                <br>
+                                                <small class="text-muted">{{ loan.interest_rate }}% p.a.</small>
+                                            </td>
+                                            <td>
+                                                <span class="status-badge status-{{ loan.status }}">
+                                                    {{ loan.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {{ loan.created_at|date:"M d, Y" }}
+                                                <br>
+                                                <small class="text-muted">{{ loan.created_at|date:"g:i A" }}</small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{% url 'loans:loan_details' loan.application_id %}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye me-1"></i>View
+                                                    </a>
+                                                    {% if loan.status == 'draft' %}
+                                                        <a href="{% url 'loans:edit_loan' loan.application_id %}" 
+                                                           class="btn btn-sm btn-outline-warning">
+                                                            <i class="fas fa-edit me-1"></i>Edit
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if loan.status == 'submitted' %}
+                                                        <a href="{% url 'loans:service_fee_payment' loan.application_id %}" 
+                                                           class="btn btn-sm btn-outline-success">
+                                                            <i class="fas fa-credit-card me-1"></i>Pay Fee
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted">No loan applications found</h5>
+                            <p class="text-muted">You haven't applied for any loans yet.</p>
+                            <a href="{% url 'loans:apply_loan' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Apply for Your First Loan
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    {% if recent_loans %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>Recent Activity
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for loan in recent_loans %}
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <div class="recent-loan-card p-3 border rounded">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="mb-0">{{ loan.get_status_display }}</h6>
+                                            <span class="status-badge status-{{ loan.status }}">
+                                                {{ loan.get_status_display }}
+                                            </span>
+                                        </div>
+                                        <p class="mb-2">
+                                            <strong>KES {{ loan.requested_amount|floatformat:0 }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ loan.repayment_period }} months</small>
+                                        </p>
+                                        <small class="text-muted">{{ loan.created_at|date:"M d, Y" }}</small>
+                                        <div class="mt-2">
+                                            <a href="{% url 'loans:loan_details' loan.application_id %}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.status-summary-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.status-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-count-draft { color: #92400e; }
+.status-count-submitted { color: #1e40af; }
+.status-count-under_review { color: #92400e; }
+.status-count-approved { color: #166534; }
+.status-count-rejected { color: #991b1b; }
+.status-count-disbursed { color: #166534; }
+.status-count-completed { color: #1e40af; }
+
+.recent-loan-card {
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.recent-loan-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.btn-group .btn {
+    margin-right: 0.25rem;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 12px;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 12px 12px 0 0 !important;
+    border: none;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+}
+</style>
+
+<script>
+// Auto-submit form when filters change
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('status');
+    const dateSelect = document.getElementById('date');
+    
+    statusSelect.addEventListener('change', function() {
+        this.form.submit();
+    });
+    
+    dateSelect.addEventListener('change', function() {
+        this.form.submit();
+    });
+});
+</script>
+{% endblock %} 
