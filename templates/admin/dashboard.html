@@ -1,0 +1,258 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}HelaCredit Admin Dashboard{% endblock %}
+
+{% block extrastyle %}
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #2563eb;
+    }
+    
+    .stat-card h3 {
+        margin: 0;
+        color: #2563eb;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    
+    .stat-card p {
+        margin: 0.5rem 0 0 0;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .recent-activity {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .activity-item {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-draft { background-color: #6c757d; color: white; }
+    .status-submitted { background-color: #007bff; color: white; }
+    .status-under_review { background-color: #ffc107; color: black; }
+    .status-approved { background-color: #28a745; color: white; }
+    .status-rejected { background-color: #dc3545; color: white; }
+    .status-disbursed { background-color: #17a2b8; color: white; }
+    .status-completed { background-color: #6f42c1; color: white; }
+    
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .nav-tabs {
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 1rem;
+    }
+    
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        border-radius: 4px 4px 0 0;
+    }
+    
+    .nav-tabs .nav-link.active {
+        background-color: #2563eb;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>{{ total_applications }}</h3>
+        <p>Total Applications</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ applications_this_month }}</h3>
+        <p>Applications This Month</p>
+    </div>
+    <div class="stat-card">
+        <h3>KES {{ total_requested|floatformat:0 }}</h3>
+        <p>Total Amount Requested</p>
+    </div>
+    <div class="stat-card">
+        <h3>KES {{ total_approved|floatformat:0 }}</h3>
+        <p>Total Amount Approved</p>
+    </div>
+    <div class="stat-card">
+        <h3>KES {{ total_payments|floatformat:0 }}</h3>
+        <p>Total Payments Received</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ applications_this_year }}</h3>
+        <p>Applications This Year</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="recent-activity">
+            <h4>Recent Applications</h4>
+            {% for application in recent_applications %}
+            <div class="activity-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>{{ application.user.get_full_name|default:application.user.username }}</strong><br>
+                        <small>KES {{ application.requested_amount|floatformat:0 }} • {{ application.county.name }}</small>
+                    </div>
+                    <span class="status-badge status-{{ application.status }}">
+                        {{ application.get_status_display }}
+                    </span>
+                </div>
+                <small class="text-muted">{{ application.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+            {% empty %}
+            <p class="text-muted">No recent applications</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="recent-activity">
+            <h4>Recent Payments</h4>
+            {% for payment in recent_payments %}
+            <div class="activity-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>{{ payment.loan_application.user.get_full_name|default:payment.loan_application.user.username }}</strong><br>
+                        <small>KES {{ payment.amount|floatformat:0 }} • {{ payment.get_payment_method_display }}</small>
+                    </div>
+                    <span class="status-badge status-{{ payment.status }}">
+                        {{ payment.get_status_display }}
+                    </span>
+                </div>
+                <small class="text-muted">{{ payment.payment_date|date:"M d, Y H:i" }}</small>
+            </div>
+            {% empty %}
+            <p class="text-muted">No recent payments</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Status Distribution</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for status, count in status_data.items %}
+                        <tr>
+                            <td>
+                                <span class="status-badge status-{{ status }}">
+                                    {{ status|title }}
+                                </span>
+                            </td>
+                            <td>{{ count }}</td>
+                            <td>{{ count|div:total_applications|mul:100|floatformat:1 }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Top Counties</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>County</th>
+                            <th>Applications</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for county in county_stats %}
+                        <tr>
+                            <td>{{ county.name }}</td>
+                            <td>{{ county.application_count }}</td>
+                            <td>KES {{ county.total_amount|default:0|floatformat:0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h4>Monthly Trends (Last 12 Months)</h4>
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Applications</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trend in monthly_trends %}
+                <tr>
+                    <td>{{ trend.month }}</td>
+                    <td>{{ trend.count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'admin:loans_loanapplication_changelist' %}" class="btn btn-primary">View All Applications</a>
+    <a href="{% url 'admin:loans_payment_changelist' %}" class="btn btn-secondary">View All Payments</a>
+    <a href="{% url 'admin_analytics' %}" class="btn btn-info">Detailed Analytics</a>
+</div>
+{% endblock %} 
