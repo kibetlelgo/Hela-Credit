@@ -29,6 +29,12 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*', '.onrender.com']
 
+# CSRF settings for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://helacredit.onrender.com',
+    'https://*.onrender.com',
+]
+
 
 # Application definition
 
@@ -127,7 +133,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-]
+] if (BASE_DIR / 'static').exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Enable WhiteNoise's GZip compression

@@ -194,6 +194,32 @@
             color: #2563eb;
             transform: translateY(-1px);
         }
+        
+        /* Mobile menu button spacing */
+        @media (max-width: 991.98px) {
+            .navbar-nav .nav-item {
+                margin-bottom: 0.5rem;
+            }
+            
+            .navbar-nav .btn {
+                margin-bottom: 0.75rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .navbar-nav .btn:last-child {
+                margin-bottom: 0;
+            }
+            
+            /* Add more spacing between auth buttons */
+            .navbar-nav .nav-item:has(.btn) {
+                margin-bottom: 1rem;
+            }
+            
+            .navbar-nav .nav-item:has(.btn) + .nav-item:has(.btn) {
+                margin-top: 0.5rem;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -247,7 +273,7 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="btn btn-light me-2" href="{% url 'accounts:login' %}">Login</a>
+                        <a class="btn btn-light me-2 mb-2 mb-lg-0" href="{% url 'accounts:login' %}">Login</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-outline-light" href="{% url 'accounts:register' %}">Register</a>
