@@ -60,12 +60,30 @@ class UserRegistrationForm(UserCreationForm):
 
 class LoanApplicationForm(forms.ModelForm):
     """Form for loan application"""
+    INCOME_CHOICES = [
+        ('0-9999', 'Below 10,000 Ksh'),
+        ('10000-19999', '10,000 - 20,000 Ksh'),
+        ('20000-29999', '20,000 - 30,000 Ksh'),
+        ('30000-49999', '30,000 - 50,000 Ksh'),
+        ('50000-99999', '50,000 - 100,000 Ksh'),
+        ('100000+', 'Above 100,000 Ksh'),
+    ]
+    
+    LOAN_PURPOSE_CHOICES = [
+        ('business', 'Business'),
+        ('school_fees', 'School Fees'),
+        ('medical', 'Medical'),
+        ('emergency', 'Emergency'),
+        ('personal', 'Personal'),
+    ]
+    
     class Meta:
         model = LoanApplication
         fields = [
             'phone_number', 'id_number', 'gender', 'date_of_birth', 
             'marital_status', 'county', 'next_of_kin', 'next_of_kin_phone', 
-            'education_level', 'requested_amount', 'repayment_period'
+            'education_level', 'employment_status', 'monthly_income', 'loan_purpose',
+            'requested_amount', 'repayment_period'
         ]
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
@@ -96,6 +114,18 @@ class LoanApplicationForm(forms.ModelForm):
         if not phone.isdigit() or len(phone) != 10:
             raise forms.ValidationError('Please enter a valid 10-digit phone number for next of kin.')
         return phone
+
+    monthly_income = forms.ChoiceField(
+        choices=INCOME_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Monthly Income (KES)'
+    )
+
+    loan_purpose = forms.ChoiceField(
+        choices=LOAN_PURPOSE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Loan Purpose'
+    )
 
 
 class PaymentForm(forms.ModelForm):
@@ -339,4 +369,63 @@ class UserProfileForm(forms.ModelForm):
                     self.fields['next_of_kin_phone'].initial = latest_loan.next_of_kin_phone
                     self.fields['education_level'].initial = latest_loan.education_level
             except:
-                pass 
+                pass
+
+
+class LoanApplicantInfoForm(forms.ModelForm):
+    class Meta:
+        model = LoanApplication
+        fields = [
+            'phone_number', 'id_number', 'gender', 'date_of_birth',
+            'marital_status', 'county', 'next_of_kin', 'next_of_kin_phone'
+        ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+
+class LoanDetailsForm(forms.ModelForm):
+    INCOME_CHOICES = [
+        ('0-9999', 'Below 10,000 Ksh'),
+        ('10000-19999', '10,000 - 19,999 Ksh'),
+        ('20000-29999', '20,000 - 29,999 Ksh'),
+        ('30000-49999', '30,000 - 49,999 Ksh'),
+        ('50000-99999', '50,000 - 99,999 Ksh'),
+        ('100000+', 'Above 100,000 Ksh'),
+    ]
+    LOAN_PURPOSE_CHOICES = [
+        ('business', 'Business'),
+        ('school_fees', 'School Fees'),
+        ('medical', 'Medical'),
+        ('emergency', 'Emergency'),
+        ('personal', 'Personal'),
+    ]
+    monthly_income = forms.ChoiceField(
+        choices=INCOME_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Monthly Income (KES)'
+    )
+    loan_purpose = forms.ChoiceField(
+        choices=LOAN_PURPOSE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Loan Purpose'
+    )
+    class Meta:
+        model = LoanApplication
+        fields = [
+            'education_level', 'employment_status', 'monthly_income', 'loan_purpose',
+            'requested_amount', 'repayment_period'
+        ]
+        widgets = {
+            'requested_amount': forms.NumberInput(attrs={'min': '1000', 'step': '100'}),
+            'repayment_period': forms.NumberInput(attrs={'min': '1', 'max': '60'}),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name not in ['monthly_income', 'loan_purpose']:
+                field.widget.attrs.update({'class': 'form-control'}) 

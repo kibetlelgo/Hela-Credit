@@ -56,6 +56,15 @@ class LoanApplication(models.Model):
         ('completed', 'Completed'),
     ]
     
+    EMPLOYMENT_STATUS_CHOICES = [
+        ('employed', 'Employed'),
+        ('self_employed', 'Self-employed'),
+        ('unemployed', 'Unemployed'),
+        ('student', 'Student'),
+        ('retired', 'Retired'),
+        ('other', 'Other'),
+    ]
+    
     # Application details
     application_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='loan_applications')
@@ -71,12 +80,15 @@ class LoanApplication(models.Model):
     next_of_kin = models.CharField(max_length=100, help_text="Enter your next of kin's full name", null=True, blank=True)
     next_of_kin_phone = models.CharField(max_length=15, help_text="Enter next of kin's phone number (e.g., 0712345678)", null=True, blank=True)
     education_level = models.CharField(max_length=20, choices=EDUCATION_LEVEL_CHOICES, help_text="Select your highest level of education", null=True, blank=True)
+    employment_status = models.CharField(max_length=20, choices=EMPLOYMENT_STATUS_CHOICES, null=True, blank=True)
+    monthly_income = models.CharField(max_length=20, null=True, blank=True, help_text="Select your monthly income range")
+    loan_purpose = models.CharField(max_length=255, null=True, blank=True, help_text="State the purpose of the loan")
     
     # Loan details
     requested_amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(1000)])
     approved_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     repayment_period = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(60)], help_text="Repayment period in months")
-    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, default=8.00, help_text="Annual interest rate (%)")
+    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, default=6.00, help_text="Annual interest rate (%)")
     
     # Payment information
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, null=True, blank=True)

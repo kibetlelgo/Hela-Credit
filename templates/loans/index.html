@@ -14,10 +14,13 @@
                             <span class="carousel-text">Borrow Upto Ksh 50,000</span>
                         </div>
                         <div class="carousel-slide" data-index="1">
+                            <span class="carousel-text">No CRB check</span>
+                        </div>
+                        <div class="carousel-slide" data-index="1">
                             <span class="carousel-text">Fast Approval in 24 Hours</span>
                         </div>
                         <div class="carousel-slide" data-index="2">
-                            <span class="carousel-text">Competitive Rates from 8%</span>
+                            <span class="carousel-text">Competitive Rates from 6%</span>
                         </div>
                         <div class="carousel-slide" data-index="3">
                             <span class="carousel-text">Secure & Transparent Process</span>
@@ -28,7 +31,7 @@
                 {% if not user.is_authenticated %}
                 <div class="d-flex gap-3">
                     <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">
-                        <i class="fas fa-user-plus me-2"></i>Get Started
+                        <i class="fas fa-user-plus me-2"></i>Apply Now
                     </a>
                     <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-sign-in-alt me-2"></i>Login
@@ -161,9 +164,83 @@
                             <div class="col-6 mb-3">
                                 <div class="stats-card">
                                     <h6>Interest Rate</h6>
-                                    <h4>15%</h4>
+                                    <h4>6%</h4>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Customer Reviews Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold">What Our Customers Say</h2>
+                <p class="lead text-muted">Real feedback from satisfied borrowers across Kenya</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                        <p class="card-text">“HelaCredit approved my loan in just a few hours and the money was in my M-Pesa the same day. The process was so easy and transparent!”</p>
+                        <div class="mt-4">
+                            <h6 class="mb-0 fw-bold">Mary Wanjiku</h6>
+                            <small class="text-muted">Nakuru County</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                        <p class="card-text">“I was able to get a loan without any CRB check. The interest rates are fair and the repayment terms are flexible. Highly recommend!”</p>
+                        <div class="mt-4">
+                            <h6 class="mb-0 fw-bold">John Otieno</h6>
+                            <small class="text-muted">Kisumu County</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                        <p class="card-text">“The customer support team was very helpful and guided me through every step. I got my loan quickly and without hassle.”</p>
+                        <div class="mt-4">
+                            <h6 class="mb-0 fw-bold">Amina Abdalla</h6>
+                            <small class="text-muted">Mombasa County</small>
                         </div>
                     </div>
                 </div>
@@ -181,8 +258,8 @@ document.getElementById('loanCalculator').addEventListener('submit', function(e)
     const amount = document.getElementById('loanAmount').value;
     const period = document.getElementById('loanPeriod').value;
     
-    // Simple loan calculation (15% annual interest rate)
-    const annualRate = 0.15;
+    // Simple loan calculation (6% annual interest rate)
+    const annualRate = 0.06;
     const monthlyRate = annualRate / 12;
     const principal = parseFloat(amount);
     const months = parseInt(period);

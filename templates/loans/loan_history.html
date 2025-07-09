@@ -13,7 +13,7 @@
                     <p class="text-muted">Track all your loan applications and their status</p>
                 </div>
                 <div>
-                    <a href="{% url 'loans:dashboard' %}" class="btn btn-outline-secondary me-2">
+                    <a href="{% url 'loans:dashboard' %}" class="btn btn-outline-secondary me-2 back-dashboard-btn">
                         <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                     </a>
                     <a href="{% url 'loans:apply_loan' %}" class="btn btn-primary">
@@ -176,7 +176,7 @@
                                             <td>
                                                 {{ loan.repayment_period }} months
                                                 <br>
-                                                <small class="text-muted">{{ loan.interest_rate }}% p.a.</small>
+                                                <small class="text-muted">6% p.a.</small>
                                             </td>
                                             <td>
                                                 <span class="status-badge status-{{ loan.status }}">
@@ -352,6 +352,17 @@
 
 .btn-sm {
     padding: 0.5rem 1rem;
+}
+
+@media (max-width: 767.98px) {
+    .back-dashboard-btn {
+        margin-bottom: 0.75rem !important;
+        display: block;
+    }
+    .back-dashboard-btn + .btn-primary {
+        display: block;
+        width: 100%;
+    }
 }
 </style>
 

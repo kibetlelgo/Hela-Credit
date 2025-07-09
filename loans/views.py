@@ -8,10 +8,12 @@ from django.utils import timezone
 from .models import LoanApplication, County, Payment, LoanDisbursement
 from .forms import (
     LoanApplicationForm, PaymentForm, DisbursementForm, 
-    LoanAmountForm, MpesaPaymentForm, BankTransferForm, MpesaServiceFeeForm, UserProfileForm
+    LoanAmountForm, MpesaPaymentForm, BankTransferForm, MpesaServiceFeeForm, UserProfileForm,
+    LoanApplicantInfoForm, LoanDetailsForm
 )
 import uuid
 from decimal import Decimal
+import datetime
 
 
 def index(request):
@@ -57,32 +59,50 @@ def dashboard(request):
 
 
 @login_required
-def apply_loan(request):
-    """Loan application form"""
-    try:
-        if request.method == 'POST':
-            form = LoanApplicationForm(request.POST)
-            if form.is_valid():
-                loan = form.save(commit=False)
-                loan.user = request.user
-                loan.application_id = uuid.uuid4()
-                loan.save()
-                messages.success(request, 'Loan application submitted successfully!')
-                return redirect('loans:loan_details', application_id=loan.application_id)
-            else:
-                messages.error(request, 'Please correct the errors below.')
-        else:
-            form = LoanApplicationForm()
-        
-        counties = County.objects.all().order_by('name')
-        context = {
-            'form': form,
-            'counties': counties,
-        }
-        return render(request, 'loans/apply_loan.html', context)
-    except Exception as e:
-        messages.error(request, f'Error creating loan application: {str(e)}')
-        return redirect('loans:dashboard')
+def apply_loan_step1(request):
+    if request.method == 'POST':
+        form = LoanApplicantInfoForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data.copy()
+            if 'date_of_birth' in data and isinstance(data['date_of_birth'], datetime.date):
+                data['date_of_birth'] = data['date_of_birth'].isoformat()
+            if 'county' in data and hasattr(data['county'], 'id'):
+                data['county'] = data['county'].id
+            request.session['loan_step1'] = data
+            return redirect('loans:apply_loan_step2')
+    else:
+        form = LoanApplicantInfoForm()
+    counties = County.objects.all().order_by('name')
+    return render(request, 'loans/apply_loan_step1.html', {'form': form, 'counties': counties})
+
+
+@login_required
+def apply_loan_step2(request):
+    step1_data = request.session.get('loan_step1')
+    if not step1_data:
+        return redirect('loans:apply_loan_step1')
+    # Convert date_of_birth back to date object
+    if 'date_of_birth' in step1_data and isinstance(step1_data['date_of_birth'], str):
+        step1_data['date_of_birth'] = datetime.date.fromisoformat(step1_data['date_of_birth'])
+    # Convert county id back to County object
+    if 'county' in step1_data and isinstance(step1_data['county'], int) or (isinstance(step1_data['county'], str) and step1_data['county'].isdigit()):
+        step1_data['county'] = County.objects.get(id=step1_data['county'])
+    if request.method == 'POST':
+        form = LoanDetailsForm(request.POST)
+        if form.is_valid():
+            loan = LoanApplication(
+                user=request.user,
+                application_id=uuid.uuid4(),
+                **step1_data,
+                **form.cleaned_data
+            )
+            loan.save()
+            del request.session['loan_step1']
+            messages.success(request, 'Loan application submitted successfully!')
+            return redirect('loans:loan_details', application_id=loan.application_id)
+    else:
+        form = LoanDetailsForm()
+    return render(request, 'loans/apply_loan_step2.html', {'form': form})
 
 
 @login_required
@@ -90,7 +110,7 @@ def loan_details(request, application_id):
     """View loan application details"""
     try:
         loan = get_object_or_404(LoanApplication, application_id=application_id, user=request.user)
-        service_fee = round(loan.requested_amount * Decimal('0.05'), 2)  # 5% service fee
+        service_fee = round(max(loan.requested_amount * Decimal('0.04'), 160), 2)  # 4% service fee, min 160
         context = {
             'loan': loan,
             'service_fee': service_fee,
@@ -165,8 +185,8 @@ def service_fee_payment(request, application_id):
             messages.error(request, 'Service fee payment is only available for submitted applications.')
             return redirect('loans:loan_details', application_id=application_id)
         
-        # Calculate service fee (5% of requested amount)
-        service_fee = round(loan.requested_amount * Decimal('0.05'), 2)  # 5% service fee
+        # Calculate service fee (4% of requested amount, min 160)
+        service_fee = round(max(loan.requested_amount * Decimal('0.04'), 160), 2)
         
         if request.method == 'POST':
             form = MpesaServiceFeeForm(request.POST)
@@ -472,7 +492,7 @@ def calculate_loan(request):
     try:
         amount = float(request.POST.get('amount', 0))
         period = int(request.POST.get('period', 12))
-        interest_rate = 8.0  # 8% annual interest rate
+        interest_rate = 6.0  # 6% annual interest rate
         
         monthly_rate = (interest_rate / 100) / 12
         monthly_payment = amount * (monthly_rate * (1 + monthly_rate) ** period) / ((1 + monthly_rate) ** period - 1)
@@ -485,4 +505,8 @@ def calculate_loan(request):
             'total_amount': round(total_amount, 2),
         })
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400) 
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+def contact(request):
+    return render(request, 'loans/contact.html') 

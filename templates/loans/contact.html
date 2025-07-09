@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - HelaCredit{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="fw-bold">Contact Us</h1>
+            <p class="lead text-muted">We'd love to hear from you! Reach out with your questions, feedback, or support needs.</p>
+        </div>
+    </div>
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-4">Send Us a Message</h5>
+                    <form method="post" action="#">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="contactName" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="contactName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="contactEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactMessage" class="form-label">Message</label>
+                            <textarea class="form-control" id="contactMessage" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Contact Information</h5>
+                    <p class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i> support@helacredit.co.ke</p>
+                    <p class="mb-2"><i class="fas fa-phone me-2 text-primary"></i> +254 712 345 678</p>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt me-2 text-primary"></i> Nairobi, Kenya</p>
+                    <hr>
+                    <h6 class="mb-2">Business Hours</h6>
+                    <p class="mb-0">Mon - Fri: 8:00am - 6:00pm</p>
+                    <p class="mb-0">Sat: 9:00am - 1:00pm</p>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div style="width: 100%; height: 250px; background: #e9ecef; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                        <span class="text-muted"><i class="fas fa-map-marked-alt fa-2x me-2"></i>Map Location Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

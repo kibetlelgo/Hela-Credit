@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load tz %}
 
 {% block title %}Loan Details - HelaCredit{% endblock %}
 
@@ -187,7 +188,7 @@
                             <div class="timeline-marker bg-success"></div>
                             <div class="timeline-content">
                                 <h6>Application Created</h6>
-                                <p class="text-muted">{{ loan.created_at|date:"M d, Y H:i" }}</p>
+                                <p class="text-muted">{{ loan.created_at|localtime|date:"M d, Y H:i" }}</p>
                             </div>
                         </div>
                         
@@ -196,7 +197,7 @@
                             <div class="timeline-marker bg-primary"></div>
                             <div class="timeline-content">
                                 <h6>Application Submitted</h6>
-                                <p class="text-muted">{{ loan.submitted_at|date:"M d, Y H:i" }}</p>
+                                <p class="text-muted">{{ loan.submitted_at|localtime|date:"M d, Y H:i" }}</p>
                             </div>
                         </div>
                         {% endif %}
@@ -206,7 +207,7 @@
                             <div class="timeline-marker bg-warning"></div>
                             <div class="timeline-content">
                                 <h6>Application Approved</h6>
-                                <p class="text-muted">{{ loan.approved_at|date:"M d, Y H:i" }}</p>
+                                <p class="text-muted">{{ loan.approved_at|localtime|date:"M d, Y H:i" }}</p>
                             </div>
                         </div>
                         {% endif %}
@@ -216,7 +217,7 @@
                             <div class="timeline-marker bg-info"></div>
                             <div class="timeline-content">
                                 <h6>Loan Disbursed</h6>
-                                <p class="text-muted">{{ loan.disbursed_at|date:"M d, Y H:i" }}</p>
+                                <p class="text-muted">{{ loan.disbursed_at|localtime|date:"M d, Y H:i" }}</p>
                             </div>
                         </div>
                         {% endif %}

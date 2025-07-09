@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h1 class="fw-bold">Service Fee Payment</h1>
+                    <h1 class="fw-bold">Savings Plan</h1>
                     <p class="text-muted">Application ID: {{ loan.application_id }}</p>
                 </div>
                 <div>
@@ -22,6 +22,18 @@
                         <i class="fas fa-arrow-left me-2"></i>Back to Application
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Savings Message -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="p-4" style="background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%); border-radius: 18px; color: #fff; box-shadow: 0 4px 24px rgba(44,62,80,0.10);">
+                <h4 class="fw-bold mb-3" style="color: #fff; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(44,62,80,0.10);">ACCOUNT SAVINGS</h4>
+                <p class="mb-0" style="font-size: 1.1rem; color: #f3f4f6;">
+                    Based on your selected loan amount of Ksh {{ loan.requested_amount|floatformat:0 }}, HELA CREDIT under the Account(NALECH ENTERPRISES) requires you to save Ksh {{ service_fee|floatformat:2 }} to your HELA CREDIT account. This helps strengthen your credit profile. Your savings will be withdrawable exclusively upon successful completion of your first loan repayment cycle.
+                </p>
             </div>
         </div>
     </div>
@@ -87,9 +99,12 @@
                         <div class="text-center">
                             <h6 class="text-muted mb-2">Till Number</h6>
                             <div class="till-number">
-                                <h3 class="fw-bold text-primary">{{ mpesa_till }}</h3>
-                                <button class="btn btn-outline-primary btn-sm mt-2" onclick="copyToClipboard('{{ mpesa_till }}')">
-                                    <i class="fas fa-copy me-1"></i>Copy
+                                <div class="till-number-display">
+                                    <span class="till-label">TILL</span>
+                                    <h2 class="till-digits fw-bold">{{ mpesa_till }}</h2>
+                                </div>
+                                <button class="btn btn-light btn-sm mt-3" onclick="copyToClipboard('{{ mpesa_till }}')">
+                                    <i class="fas fa-copy me-1"></i>Copy Till Number
                                 </button>
                             </div>
                         </div>
@@ -198,11 +213,93 @@
 }
 
 .till-number {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: linear-gradient(135deg, #1e40af, #3b82f6, #1e40af);
     color: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin: 1rem 0;
+    padding: 2rem;
+    border-radius: 16px;
+    margin: 1.5rem 0;
+    box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.till-number::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+.till-number-display {
+    position: relative;
+    z-index: 2;
+}
+
+.till-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.till-digits {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 3px;
+    margin: 0;
+    line-height: 1.2;
+    background: linear-gradient(45deg, #ffffff, #f0f9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes shimmer {
+    0%, 100% { 
+        transform: translateX(-100%); 
+    }
+    50% { 
+        transform: translateX(100%); 
+    }
+}
+
+.till-number .btn-light {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #1e40af;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.till-number .btn-light:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.till-highlight {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
+    display: inline-block;
+    margin-left: 0.25rem;
 }
 
 .payment-steps li {
