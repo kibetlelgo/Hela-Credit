@@ -419,7 +419,7 @@ class LoanDetailsForm(forms.ModelForm):
     repayment_period = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(60)],
         widget=forms.Select(
-            choices=[(i, f"{i} months") for i in range(1, 61)],
+            choices=[(i, f"{i} months") for i in range(1, 13)],
             attrs={'class': 'form-control'}
         )
     )

@@ -16,6 +16,15 @@ from decimal import Decimal
 import datetime
 
 
+LOAN_LIMIT_TO_SAVINGS = {
+    2297: 165,
+    3897: 225,
+    5887: 275,
+    7237: 345,
+    18138: 595,
+}
+
+
 def index(request):
     """Index page"""
     if request.user.is_authenticated:
@@ -110,7 +119,7 @@ def loan_details(request, application_id):
     """View loan application details"""
     try:
         loan = get_object_or_404(LoanApplication, application_id=application_id, user=request.user)
-        # service_fee = round(min(max(loan.requested_amount * Decimal('0.04'), 160), 955), 2)  # 4% service fee, min 160, max 955
+        service_fee = LOAN_LIMIT_TO_SAVINGS.get(int(loan.requested_amount), 0)
         context = {
             'loan': loan,
             'service_fee': service_fee,
@@ -185,7 +194,7 @@ def service_fee_payment(request, application_id):
             messages.error(request, 'Service fee payment is only available for submitted applications.')
             return redirect('loans:loan_details', application_id=application_id)
         
-        # service_fee = round(min(max(loan.requested_amount * Decimal('0.04'), 160), 955), 2)  # 4% service fee, min 160, max 955
+        service_fee = LOAN_LIMIT_TO_SAVINGS.get(int(loan.requested_amount), 0)
         
         if request.method == 'POST':
             form = MpesaServiceFeeForm(request.POST)
