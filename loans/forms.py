@@ -423,6 +423,16 @@ class LoanDetailsForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
+    monthly_income = forms.ChoiceField(
+        choices=INCOME_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Monthly Income (KES)'
+    )
+    loan_purpose = forms.ChoiceField(
+        choices=LOAN_PURPOSE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Loan Purpose'
+    )
     class Meta:
         model = LoanApplication
         fields = [
