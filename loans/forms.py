@@ -406,12 +406,12 @@ class LoanDetailsForm(forms.ModelForm):
     ]
     REQUESTED_AMOUNT_CHOICES = [
         ('', 'Choose amount'),
-        ('2297',  'Limit Ksh 2297 (Savings amount: Ksh 165)'),
-        ('3897',  'Limit Ksh 3897 (Savings amount: Ksh 225)'),
-        ('5887',  'Limit Ksh 5887 (Savings amount: Ksh 275)'),
-        ('7237',  'Limit Ksh 7237 (Savings amount: Ksh 345)'),
-        ('18138', 'Limit Ksh 18138 (Savings amount: Ksh 595)'),
-        ('29138', 'Limit Ksh 29138 (Savings amount: Ksh 755)'),  # <--- Already present
+        ('5000',  'Limit Ksh 5000  - (Savings amount: Ksh 160)'),
+        ('10000', 'Limit Ksh 10000 - (Savings amount: Ksh 270)'),
+        ('15000', 'Limit Ksh 15000 - (Savings amount: Ksh 340)'),
+        ('20000', 'Limit Ksh 20000 - (Savings amount: Ksh 425)'),
+        ('30000', 'Limit Ksh 30000 - (Savings amount: Ksh 520)'),
+        ('50000', 'Limit Ksh 50000 - (Savings amount: Ksh 755)'),  
     ]
     requested_amount = forms.ChoiceField(
         choices=REQUESTED_AMOUNT_CHOICES,
