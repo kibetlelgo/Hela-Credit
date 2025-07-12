@@ -391,10 +391,10 @@ class LoanApplicantInfoForm(forms.ModelForm):
 class LoanDetailsForm(forms.ModelForm):
     INCOME_CHOICES = [
         ('0-9999', 'Below 10,000 Ksh'),
-        ('10000-19999', '10,000 - 19,999 Ksh'),
-        ('20000-29999', '20,000 - 29,999 Ksh'),
-        ('30000-49999', '30,000 - 49,999 Ksh'),
-        ('50000-99999', '50,000 - 99,999 Ksh'),
+        ('10000-19999', '10,000 - 20,000 Ksh'),
+        ('20000-29999', '20,000 - 30,000 Ksh'),
+        ('30000-49999', '30,000 - 50,000 Ksh'),
+        ('50000-99999', '50,000 - 100,000 Ksh'),
         ('100000+', 'Above 100,000 Ksh'),
     ]
     LOAN_PURPOSE_CHOICES = [
@@ -405,11 +405,11 @@ class LoanDetailsForm(forms.ModelForm):
         ('personal', 'Personal'),
     ]
     REQUESTED_AMOUNT_CHOICES = [
-        ('165', 'Ksh 165 (Loan limit: Ksh 2297)'),
-        ('225', 'Ksh 225 (Loan limit: Ksh 3897)'),
-        ('275', 'Ksh 275 (Loan limit: Ksh 5887)'),
-        ('345', 'Ksh 345 (Loan limit: Ksh 7237)'),
-        ('595', 'Ksh 595 (Loan limit: Ksh 18138)'),
+        ('2297',  'Limit Ksh 2297 (Savings amount: Ksh 165)'),
+        ('3897',  'Limit Ksh 3897 (Savings amount: Ksh 225)'),
+        ('5887',  'Limit Ksh 5887 (Savings amount: Ksh 275)'),
+        ('7237',  'Limit Ksh 7237 (Savings amount: Ksh 345)'),
+        ('18138', 'Limit Ksh 18138 (Savings amount: Ksh 595)'),
     ]
     requested_amount = forms.ChoiceField(
         choices=REQUESTED_AMOUNT_CHOICES,
@@ -440,7 +440,6 @@ class LoanDetailsForm(forms.ModelForm):
             'requested_amount', 'repayment_period'
         ]
         widgets = {
-            'requested_amount': forms.NumberInput(attrs={'min': '1000', 'max': '50000', 'step': '100'}),
             'repayment_period': forms.NumberInput(attrs={'min': '1', 'max': '60'}),
         }
     def __init__(self, *args, **kwargs):

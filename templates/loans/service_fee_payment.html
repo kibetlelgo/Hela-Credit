@@ -541,7 +541,7 @@ function copyToClipboard(text) {
     
     try {
         // Try to use the modern clipboard API
-        navigator.clipboard.writeText(text).then(function() {
+    navigator.clipboard.writeText(text).then(function() {
             showCopySuccess();
         }).catch(function(err) {
             // Fallback for older browsers
@@ -559,18 +559,18 @@ function copyToClipboard(text) {
 }
 
 function showCopySuccess() {
-    // Show a temporary success message
-    const button = event.target;
-    const originalText = button.innerHTML;
+        // Show a temporary success message
+        const button = event.target;
+        const originalText = button.innerHTML;
     const originalClasses = button.className;
     
-    button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
     button.className = 'btn btn-success btn-sm mt-3';
-    
-    setTimeout(function() {
-        button.innerHTML = originalText;
+        
+        setTimeout(function() {
+            button.innerHTML = originalText;
         button.className = originalClasses;
-    }, 2000);
+        }, 2000);
 }
 </script>
 {% endblock %} 
