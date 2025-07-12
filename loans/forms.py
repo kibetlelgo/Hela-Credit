@@ -414,7 +414,7 @@ class LoanDetailsForm(forms.ModelForm):
     requested_amount = forms.ChoiceField(
         choices=REQUESTED_AMOUNT_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'}),
-        label='Requested Amount (KES)'
+        label='Loan Limit'
     )
     repayment_period = forms.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(60)],
