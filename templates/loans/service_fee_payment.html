@@ -213,26 +213,15 @@
 }
 
 .till-number {
-    background: linear-gradient(135deg, #1e40af, #3b82f6, #1e40af);
+    background: linear-gradient(135deg, #16a34a, #22c55e, #16a34a);
     color: white;
     padding: 2rem;
     border-radius: 16px;
     margin: 1.5rem 0;
-    box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+    box-shadow: 0 8px 32px rgba(22, 163, 74, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
-}
-
-.till-number::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    animation: shimmer 2s ease-in-out infinite;
 }
 
 .till-number-display {
@@ -258,26 +247,17 @@
     letter-spacing: 3px;
     margin: 0;
     line-height: 1.2;
-    background: linear-gradient(45deg, #ffffff, #f0f9ff);
+    background: linear-gradient(45deg, #ffffff, #f0fdf4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-@keyframes shimmer {
-    0%, 100% { 
-        transform: translateX(-100%); 
-    }
-    50% { 
-        transform: translateX(100%); 
-    }
-}
-
 .till-number .btn-light {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #1e40af;
+    color: #16a34a;
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
