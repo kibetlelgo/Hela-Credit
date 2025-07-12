@@ -410,11 +410,10 @@ class LoanDetailsForm(forms.ModelForm):
         ('5887',  'Limit Ksh 5887 (Savings amount: Ksh 275)'),
         ('7237',  'Limit Ksh 7237 (Savings amount: Ksh 345)'),
         ('18138', 'Limit Ksh 18138 (Savings amount: Ksh 595)'),
-        
     ]
     requested_amount = forms.ChoiceField(
         choices=REQUESTED_AMOUNT_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'}),
+        widget=forms.Select(attrs={'class': 'form-select', 'placeholder': 'Choose Amount'}),
         label='Loan Limit'
     )
     repayment_period = forms.IntegerField(
