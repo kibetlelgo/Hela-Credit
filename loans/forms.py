@@ -404,22 +404,24 @@ class LoanDetailsForm(forms.ModelForm):
         ('emergency', 'Emergency'),
         ('personal', 'Personal'),
     ]
-    monthly_income = forms.ChoiceField(
-        choices=INCOME_CHOICES,
+    REQUESTED_AMOUNT_CHOICES = [
+        ('165', 'Ksh 165 (Loan limit: Ksh 2297)'),
+        ('225', 'Ksh 225 (Loan limit: Ksh 3897)'),
+        ('275', 'Ksh 275 (Loan limit: Ksh 5887)'),
+        ('345', 'Ksh 345 (Loan limit: Ksh 7237)'),
+        ('595', 'Ksh 595 (Loan limit: Ksh 18138)'),
+    ]
+    requested_amount = forms.ChoiceField(
+        choices=REQUESTED_AMOUNT_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'}),
-        label='Monthly Income (KES)'
-    )
-    loan_purpose = forms.ChoiceField(
-        choices=LOAN_PURPOSE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'}),
-        label='Loan Purpose'
-    )
-    requested_amount = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MaxValueValidator(50000)],
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '1000', 'max': '50000', 'step': '100'}),
         label='Requested Amount (KES)'
+    )
+    repayment_period = forms.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(60)],
+        widget=forms.Select(
+            choices=[(i, f"{i} months") for i in range(1, 61)],
+            attrs={'class': 'form-control'}
+        )
     )
     class Meta:
         model = LoanApplication
