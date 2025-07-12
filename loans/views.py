@@ -110,7 +110,7 @@ def loan_details(request, application_id):
     """View loan application details"""
     try:
         loan = get_object_or_404(LoanApplication, application_id=application_id, user=request.user)
-        service_fee = round(max(loan.requested_amount * Decimal('0.04'), 160), 2)  # 4% service fee, min 160
+        service_fee = round(min(max(loan.requested_amount * Decimal('0.04'), 160), 955), 2)  # 4% service fee, min 160, max 955
         context = {
             'loan': loan,
             'service_fee': service_fee,
@@ -186,7 +186,7 @@ def service_fee_payment(request, application_id):
             return redirect('loans:loan_details', application_id=application_id)
         
         # Calculate service fee (4% of requested amount, min 160)
-        service_fee = round(max(loan.requested_amount * Decimal('0.04'), 160), 2)
+        service_fee = round(min(max(loan.requested_amount * Decimal('0.04'), 160), 955), 2)  # 4% service fee, min 160, max 955
         
         if request.method == 'POST':
             form = MpesaServiceFeeForm(request.POST)

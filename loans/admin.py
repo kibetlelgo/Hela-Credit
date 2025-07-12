@@ -140,7 +140,7 @@ class LoanDisbursementAdmin(admin.ModelAdmin):
     list_filter = ['disbursement_method', 'disbursement_date']
     search_fields = ['reference_number', 'loan_application__application_id', 'transaction_id']
     readonly_fields = ['reference_number', 'disbursement_date']
-    ordering = ['-disbursement_date']
+    ordering = ['-disbursement_date'] 
     list_per_page = 25
     
     def loan_application_link(self, obj):

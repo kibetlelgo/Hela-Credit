@@ -123,11 +123,11 @@
                             </li>
                             <li class="mb-2">
                                 <span class="badge bg-primary me-2">3</span>
-                                Enter till number: <strong>{{ mpesa_till }}</strong>
+                                Enter till number: <span class="till-step-highlight">{{ mpesa_till }}</span>
                             </li>
                             <li class="mb-2">
                                 <span class="badge bg-primary me-2">4</span>
-                                Enter amount: <strong>KES {{ service_fee|floatformat:2 }}</strong>
+                                Enter amount: <span class="amount-step-highlight">KES {{ service_fee|floatformat:2 }}</span>
                             </li>
                             <li class="mb-2">
                                 <span class="badge bg-primary me-2">5</span>
@@ -270,16 +270,86 @@
 }
 
 .till-highlight {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    background: linear-gradient(135deg, #16a34a, #22c55e);
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
     font-weight: 700;
     font-size: 1.1rem;
     letter-spacing: 1px;
-    box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
     display: inline-block;
     margin-left: 0.25rem;
+}
+
+.till-step-highlight {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+    display: inline-block;
+    margin-left: 0.25rem;
+}
+
+.amount-step-highlight {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    display: inline-block;
+    margin-left: 0.25rem;
+}
+
+/* Mobile responsiveness for till number */
+@media (max-width: 768px) {
+    .till-number {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .till-digits {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+    
+    .till-label {
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .till-number .btn-light {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .till-number {
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .till-digits {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .till-label {
+        font-size: 0.75rem;
+    }
+    
+    .till-number .btn-light {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
 }
 
 .payment-steps li {
@@ -460,22 +530,47 @@ setInterval(() => {
 }, Math.random() * 7000 + 8000); // Random interval between 8-15 seconds
 
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        // Show a temporary success message
-        const button = event.target;
-        const originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
-        button.classList.remove('btn-outline-primary');
-        button.classList.add('btn-success');
-        
-        setTimeout(function() {
-            button.innerHTML = originalText;
-            button.classList.remove('btn-success');
-            button.classList.add('btn-outline-primary');
-        }, 2000);
-    }).catch(function(err) {
-        console.error('Could not copy text: ', err);
-    });
+    // Create a temporary input element for mobile compatibility
+    const tempInput = document.createElement('input');
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    
+    // Select the text
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        // Try to use the modern clipboard API
+        navigator.clipboard.writeText(text).then(function() {
+            showCopySuccess();
+        }).catch(function(err) {
+            // Fallback for older browsers
+            document.execCommand('copy');
+            showCopySuccess();
+        });
+    } catch (err) {
+        // Fallback for older browsers
+        document.execCommand('copy');
+        showCopySuccess();
+    }
+    
+    // Remove the temporary input
+    document.body.removeChild(tempInput);
+}
+
+function showCopySuccess() {
+    // Show a temporary success message
+    const button = event.target;
+    const originalText = button.innerHTML;
+    const originalClasses = button.className;
+    
+    button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+    button.className = 'btn btn-success btn-sm mt-3';
+    
+    setTimeout(function() {
+        button.innerHTML = originalText;
+        button.className = originalClasses;
+    }, 2000);
 }
 </script>
 {% endblock %} 

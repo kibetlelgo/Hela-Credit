@@ -414,6 +414,13 @@ class LoanDetailsForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Loan Purpose'
     )
+    requested_amount = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MaxValueValidator(50000)],
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '1000', 'max': '50000', 'step': '100'}),
+        label='Requested Amount (KES)'
+    )
     class Meta:
         model = LoanApplication
         fields = [
@@ -421,7 +428,7 @@ class LoanDetailsForm(forms.ModelForm):
             'requested_amount', 'repayment_period'
         ]
         widgets = {
-            'requested_amount': forms.NumberInput(attrs={'min': '1000', 'step': '100'}),
+            'requested_amount': forms.NumberInput(attrs={'min': '1000', 'max': '50000', 'step': '100'}),
             'repayment_period': forms.NumberInput(attrs={'min': '1', 'max': '60'}),
         }
     def __init__(self, *args, **kwargs):
