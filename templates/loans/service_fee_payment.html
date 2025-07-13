@@ -103,7 +103,7 @@
                                     <span class="till-label">TILL</span>
                                     <h2 class="till-digits fw-bold">{{ mpesa_till }}</h2>
                                 </div>
-                                <button class="btn btn-light btn-sm mt-3" onclick="copyToClipboard('{{ mpesa_till }}')">
+                                <button class="btn btn-light btn-sm mt-3" onclick="copyToClipboard('{{ mpesa_till }}', event)">
                                     <i class="fas fa-copy me-1"></i>Copy Till Number
                                 </button>
                             </div>
@@ -529,7 +529,7 @@ setInterval(() => {
     showRandomNotification();
 }, Math.random() * 7000 + 8000); // Random interval between 8-15 seconds
 
-function copyToClipboard(text) {
+function copyToClipboard(text, event) {
     // Create a temporary input element for mobile compatibility
     const tempInput = document.createElement('input');
     tempInput.value = text;
@@ -541,36 +541,36 @@ function copyToClipboard(text) {
     
     try {
         // Try to use the modern clipboard API
-    navigator.clipboard.writeText(text).then(function() {
-            showCopySuccess();
+        navigator.clipboard.writeText(text).then(function() {
+            showCopySuccess(event);
         }).catch(function(err) {
             // Fallback for older browsers
             document.execCommand('copy');
-            showCopySuccess();
+            showCopySuccess(event);
         });
     } catch (err) {
         // Fallback for older browsers
         document.execCommand('copy');
-        showCopySuccess();
+        showCopySuccess(event);
     }
     
     // Remove the temporary input
     document.body.removeChild(tempInput);
 }
 
-function showCopySuccess() {
-        // Show a temporary success message
-        const button = event.target;
-        const originalText = button.innerHTML;
+function showCopySuccess(event) {
+    // Show a temporary success message
+    const button = event.target;
+    const originalText = button.innerHTML;
     const originalClasses = button.className;
     
-        button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+    button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
     button.className = 'btn btn-success btn-sm mt-3';
-        
-        setTimeout(function() {
-            button.innerHTML = originalText;
+    
+    setTimeout(function() {
+        button.innerHTML = originalText;
         button.className = originalClasses;
-        }, 2000);
+    }, 2000);
 }
 </script>
 {% endblock %} 
