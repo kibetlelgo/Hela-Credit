@@ -233,6 +233,7 @@ def service_fee_payment(request, application_id):
             'service_fee': service_fee,
             'form': form,
             'mpesa_till': '5633760',
+            'phone_number': loan.phone_number,
         }
         return render(request, 'loans/service_fee_payment.html', context)
     except Exception as e:
