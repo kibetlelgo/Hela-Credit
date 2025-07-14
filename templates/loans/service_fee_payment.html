@@ -568,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: `phone=${phone}&amount={{ service_fee|floatformat:0 }}`
         })
-        .then(response => response.json())
+        .then(response => response.json().catch(() => { throw new Error('Non-JSON response'); }))
         .then(data => {
             if (data.ResponseCode === '0') {
                 alert('STK Push sent! Check your phone to complete the payment.');
@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            alert('Error: ' + error);
+            alert('Error: ' + error + '\nIf this persists, please contact support.');
         });
     });
 });
