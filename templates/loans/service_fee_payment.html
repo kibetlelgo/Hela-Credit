@@ -113,39 +113,11 @@
                     <!-- Pay Instantly with M-Pesa Button -->
                     <div class="text-center mb-4">
                         <button type="button" class="btn btn-success btn-lg w-100" style="font-size: 1.15rem; font-weight: 600;">
-                            <i class="fas fa-bolt me-2"></i>Pay Instantly with M-Pesa
+                            <i class="fas fa-bolt me-2"></i>Get Loan Now
                         </button>
                     </div>
                     
-                    <div class="payment-steps">
-                        <h6 class="mb-3">Payment Steps:</h6>
-                        <ol class="list-unstyled">
-                            <li class="mb-2">
-                                <span class="badge bg-primary me-2">1</span>
-                                Go to M-Pesa menu
-                            </li>
-                            <li class="mb-2">
-                                <span class="badge bg-primary me-2">2</span>
-                                Select "Lipa na M-Pesa"
-                            </li>
-                            <li class="mb-2">
-                                <span class="badge bg-primary me-2">3</span>
-                                Enter till number: {{ mpesa_till }}
-                            </li>
-                            <li class="mb-2">
-                                <span class="badge bg-primary me-2">4</span>
-                                Enter amount: KES {{ service_fee|floatformat:2 }}
-                            </li>
-                            <li class="mb-2">
-                                <span class="badge bg-primary me-2">5</span>
-                                Enter your M-Pesa PIN
-                            </li>
-                            <li class="mb-2">
-                                <span class="badge bg-primary me-2">6</span>
-                                Confirm payment
-                            </li>
-                        </ol>
-                    </div>
+                    <!-- Removed payment-steps section here -->
                 </div>
             </div>
         </div>
