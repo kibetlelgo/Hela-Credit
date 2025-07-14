@@ -527,7 +527,30 @@ def contact(request):
     return render(request, 'loans/contact.html') 
 
 
+def get_access_token():
+    """Get OAuth access token from Safaricom Daraja API, with error handling and logging."""
+    env = getattr(settings, 'DARAJA_ENV', 'sandbox')
+    consumer_key = getattr(settings, 'DARAJA_CONSUMER_KEY', None)
+    consumer_secret = getattr(settings, 'DARAJA_CONSUMER_SECRET', None)
+    if not consumer_key or not consumer_secret:
+        print('[DARAJA ERROR] Missing consumer key or secret in environment variables.')
+        return None
+    url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials' \
+        if env == 'sandbox' \
+        else 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    try:
+        response = requests.get(url, auth=(consumer_key, consumer_secret))
+        print('[DARAJA] Access token status:', response.status_code)
+        print('[DARAJA] Access token response:', response.text)
+        response.raise_for_status()
+        return response.json().get('access_token')
+    except Exception as e:
+        print(f'[DARAJA ERROR] Failed to get access token: {e}')
+        return None
+
+
 def format_phone_number(phone):
+    """Format phone number to 2547XXXXXXXX for Daraja API."""
     phone = str(phone).replace(' ', '').replace('-', '').replace('+', '')
     if phone.startswith('07') and len(phone) == 10:
         phone = '254' + phone[1:]
@@ -537,50 +560,53 @@ def format_phone_number(phone):
     return phone
 
 
-def get_access_token():
-    url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials' \
-        if settings.DARAJA_ENV == 'sandbox' \
-        else 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
-    response = requests.get(
-        url,
-        auth=(settings.DARAJA_CONSUMER_KEY, settings.DARAJA_CONSUMER_SECRET)
-    )
-    return response.json().get('access_token')
-
-
 def lipa_na_mpesa_online(phone_number, amount, account_reference, transaction_desc, callback_url):
+    """Initiate STK Push with robust error handling and logging."""
+    env = getattr(settings, 'DARAJA_ENV', 'sandbox')
+    shortcode = getattr(settings, 'DARAJA_SHORTCODE', None)
+    passkey = getattr(settings, 'DARAJA_PASSKEY', None)
+    if not shortcode or not passkey:
+        print('[DARAJA ERROR] Missing shortcode or passkey in environment variables.')
+        return {'error': 'Missing shortcode or passkey in environment variables.'}
     access_token = get_access_token()
+    if not access_token:
+        return {'error': 'Failed to obtain access token. Check credentials and environment.'}
     phone_number = format_phone_number(phone_number)
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-    data_to_encode = settings.DARAJA_SHORTCODE + settings.DARAJA_PASSKEY + timestamp
+    data_to_encode = shortcode + passkey + timestamp
     password = base64.b64encode(data_to_encode.encode()).decode('utf-8')
     api_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest' \
-        if settings.DARAJA_ENV == 'sandbox' \
+        if env == 'sandbox' \
         else 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
     }
     payload = {
-        "BusinessShortCode": settings.DARAJA_SHORTCODE,
+        "BusinessShortCode": shortcode,
         "Password": password,
         "Timestamp": timestamp,
         "TransactionType": "CustomerPayBillOnline",
         "Amount": amount,
         "PartyA": phone_number,
-        "PartyB": settings.DARAJA_SHORTCODE,
+        "PartyB": shortcode,
         "PhoneNumber": phone_number,
         "CallBackURL": callback_url,
         "AccountReference": account_reference,
         "TransactionDesc": transaction_desc
     }
-    response = requests.post(api_url, json=payload, headers=headers)
-    print('Daraja STK Push status:', response.status_code)
-    print('Daraja STK Push text:', response.text)
     try:
+        response = requests.post(api_url, json=payload, headers=headers)
+        print('[DARAJA] STK Push status:', response.status_code)
+        print('[DARAJA] STK Push text:', response.text)
+        response.raise_for_status()
         return response.json()
+    except requests.HTTPError as http_err:
+        print(f'[DARAJA ERROR] HTTP error: {http_err}')
+        return {'error': f'HTTP error: {http_err}', 'response': response.text, 'status_code': response.status_code}
     except Exception as e:
-        return {'error': f'Non-JSON response: {response.text}', 'status_code': response.status_code}
+        print(f'[DARAJA ERROR] Non-JSON or network error: {e}')
+        return {'error': f'Non-JSON response: {getattr(response, "text", str(e))}', 'status_code': getattr(response, 'status_code', None)}
 
 
 @csrf_exempt
