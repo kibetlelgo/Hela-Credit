@@ -568,26 +568,32 @@ def lipa_na_mpesa_online(phone_number, amount, account_reference, transaction_de
 
 @csrf_exempt
 def initiate_stk_push(request):
-    if request.method == 'POST':
-        phone = request.POST.get('phone')
-        amount = request.POST.get('amount')
-        callback_url = 'https://helacredit.onrender.com/loans/mpesa/callback/'
-        result = lipa_na_mpesa_online(
-            phone_number=phone,
-            amount=amount,
-            account_reference='HelaCredit',
-            transaction_desc='Service Fee Payment',
-            callback_url=callback_url
-        )
-        return JsonResponse(result)
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    try:
+        if request.method == 'POST':
+            phone = request.POST.get('phone')
+            amount = request.POST.get('amount')
+            callback_url = 'https://helacredit.onrender.com/loans/mpesa/callback/'
+            result = lipa_na_mpesa_online(
+                phone_number=phone,
+                amount=amount,
+                account_reference='HelaCredit',
+                transaction_desc='Service Fee Payment',
+                callback_url=callback_url
+            )
+            return JsonResponse(result)
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 @csrf_exempt
 def mpesa_callback(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        print('M-Pesa Callback:', data)
-        # TODO: Process the callback data (save to DB, update payment status, etc.)
-        return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
-    return JsonResponse({'error': 'Invalid request'}, status=400) 
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            print('M-Pesa Callback:', data)
+            # TODO: Process the callback data (save to DB, update payment status, etc.)
+            return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500) 
