@@ -527,6 +527,16 @@ def contact(request):
     return render(request, 'loans/contact.html') 
 
 
+def format_phone_number(phone):
+    phone = str(phone).replace(' ', '').replace('-', '').replace('+', '')
+    if phone.startswith('07') and len(phone) == 10:
+        phone = '254' + phone[1:]
+    elif phone.startswith('7') and len(phone) == 9:
+        phone = '254' + phone
+    # If already starts with '254' and length 12, do nothing
+    return phone
+
+
 def get_access_token():
     url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials' \
         if settings.DARAJA_ENV == 'sandbox' \
@@ -540,6 +550,7 @@ def get_access_token():
 
 def lipa_na_mpesa_online(phone_number, amount, account_reference, transaction_desc, callback_url):
     access_token = get_access_token()
+    phone_number = format_phone_number(phone_number)
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     data_to_encode = settings.DARAJA_SHORTCODE + settings.DARAJA_PASSKEY + timestamp
     password = base64.b64encode(data_to_encode.encode()).decode('utf-8')
