@@ -539,7 +539,7 @@ def get_access_token():
 
 def lipa_na_mpesa_online(phone_number, amount, account_reference, transaction_desc, callback_url):
     access_token = get_access_token()
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     data_to_encode = settings.DARAJA_SHORTCODE + settings.DARAJA_PASSKEY + timestamp
     password = base64.b64encode(data_to_encode.encode()).decode('utf-8')
     api_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest' \
