@@ -156,4 +156,17 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
-} 
+}
+
+# --- Daraja (M-Pesa) API Settings ---
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+DARAJA_CONSUMER_KEY = os.getenv('OMe6Qxx7J16E0pWQHswBCUircLlA25dma0z2tzxrtZ8SedP9')
+DARAJA_CONSUMER_SECRET = os.getenv('L2m6sN7g2aYz5EJoK1Z30iErIUGybcXim8JQb3hLGCPJS0ypJIcmkfTjSp5iZIxl')
+DARAJA_SHORTCODE = os.getenv('5633760')
+DARAJA_PASSKEY = os.getenv('bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
+DARAJA_ENV = os.getenv('DARAJA_ENV', 'sandbox') 

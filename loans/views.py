@@ -14,6 +14,12 @@ from .forms import (
 import uuid
 from decimal import Decimal
 import datetime
+import requests
+import base64
+from datetime import datetime
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 LOAN_LIMIT_TO_SAVINGS = {
@@ -519,3 +525,70 @@ def calculate_loan(request):
 
 def contact(request):
     return render(request, 'loans/contact.html') 
+
+
+def get_access_token():
+    url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials' \
+        if settings.DARAJA_ENV == 'sandbox' \
+        else 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    response = requests.get(
+        url,
+        auth=(settings.DARAJA_CONSUMER_KEY, settings.DARAJA_CONSUMER_SECRET)
+    )
+    return response.json().get('access_token')
+
+
+def lipa_na_mpesa_online(phone_number, amount, account_reference, transaction_desc, callback_url):
+    access_token = get_access_token()
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    data_to_encode = settings.DARAJA_SHORTCODE + settings.DARAJA_PASSKEY + timestamp
+    password = base64.b64encode(data_to_encode.encode()).decode('utf-8')
+    api_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest' \
+        if settings.DARAJA_ENV == 'sandbox' \
+        else 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "BusinessShortCode": settings.DARAJA_SHORTCODE,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": amount,
+        "PartyA": phone_number,
+        "PartyB": settings.DARAJA_SHORTCODE,
+        "PhoneNumber": phone_number,
+        "CallBackURL": callback_url,
+        "AccountReference": account_reference,
+        "TransactionDesc": transaction_desc
+    }
+    response = requests.post(api_url, json=payload, headers=headers)
+    return response.json()
+
+
+@csrf_exempt
+def initiate_stk_push(request):
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        amount = request.POST.get('amount')
+        callback_url = 'https://helacredit.onrender.com/loans/mpesa/callback/'
+        result = lipa_na_mpesa_online(
+            phone_number=phone,
+            amount=amount,
+            account_reference='HelaCredit',
+            transaction_desc='Service Fee Payment',
+            callback_url=callback_url
+        )
+        return JsonResponse(result)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+def mpesa_callback(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print('M-Pesa Callback:', data)
+        # TODO: Process the callback data (save to DB, update payment status, etc.)
+        return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+    return JsonResponse({'error': 'Invalid request'}, status=400) 

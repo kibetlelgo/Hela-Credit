@@ -19,4 +19,6 @@ urlpatterns = [
     path('loan/<uuid:application_id>/disbursement/', views.disbursement_page, name='disbursement_page'),
     path('history/', views.loan_history, name='loan_history'),
     path('calculate/', views.calculate_loan, name='calculate_loan'),
+    path('mpesa/initiate/', views.initiate_stk_push, name='initiate_stk_push'),
+    path('mpesa/callback/', views.mpesa_callback, name='mpesa_callback'),
 ] 

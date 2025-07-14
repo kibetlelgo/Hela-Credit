@@ -89,12 +89,6 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <!-- Pay Instantly with M-Pesa Button -->
-                    <div class="text-center mb-4">
-                        <button type="button" class="btn btn-success btn-lg w-100" style="font-size: 1.15rem; font-weight: 600;">
-                            <i class="fas fa-bolt me-2"></i>Get Loan Now
-                        </button>
-                    </div>
                     <div class="text-center mb-4">
                         <i class="fas fa-mobile-alt text-success mb-3" style="font-size: 3rem;"></i>
                         <h5>Pay via M-Pesa</h5>
@@ -116,7 +110,12 @@
                         </div>
                     </div>
 
-                  
+                    <!-- Pay Instantly with M-Pesa Button -->
+                    <div class="text-center mb-4">
+                        <button id="get-loan-now-btn" type="button" class="btn btn-success btn-lg w-100" style="font-size: 1.15rem; font-weight: 600;">
+                            <i class="fas fa-bolt me-2"></i>Get Loan Now
+                        </button>
+                    </div>
                     
                     <!-- Removed payment-steps section here -->
                 </div>
@@ -552,5 +551,35 @@ function showCopySuccess(event) {
         button.className = originalClasses;
         }, 2000);
 }
+</script>
+{% csrf_token %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('get-loan-now-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        const phone = prompt('Enter your M-Pesa phone number (format: 2547XXXXXXXX):');
+        if (!phone) return;
+        fetch("{% url 'loans:initiate_stk_push' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: `phone=${phone}&amount={{ service_fee|floatformat:0 }}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ResponseCode === '0') {
+                alert('STK Push sent! Check your phone to complete the payment.');
+            } else {
+                alert('Failed to initiate payment: ' + (data.errorMessage || JSON.stringify(data)));
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        });
+    });
+});
 </script>
 {% endblock %} 
