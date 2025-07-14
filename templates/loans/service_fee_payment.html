@@ -110,6 +110,41 @@
                         </div>
                     </div>
                     
+                    <!-- STK Push Button and Modal (added above payment steps) -->
+                    <div class="text-center my-4">
+                        <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#stkPushModal">
+                            <i class="fas fa-bolt me-2"></i>Pay Instantly with M-Pesa (STK Push)
+                        </button>
+                    </div>
+                    <!-- STK Push Modal -->
+                    <div class="modal fade" id="stkPushModal" tabindex="-1" aria-labelledby="stkPushModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <form id="stkPushForm">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="stkPushModalLabel">Instant M-Pesa Payment</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="mb-3">
+                                <label for="mpesaPhone" class="form-label">M-Pesa Phone Number</label>
+                                <input type="tel" class="form-control" id="mpesaPhone" name="mpesaPhone" placeholder="e.g. 07XXXXXXXX" required>
+                                <div class="form-text">Enter the number registered with M-Pesa.</div>
+                              </div>
+                              <div id="stkPushStatus" class="alert d-none"></div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="submit" class="btn btn-success">
+                                <span id="stkPushSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                Pay Now
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End STK Push Modal -->
+                    
                     <div class="payment-steps">
                         <h6 class="mb-3">Payment Steps:</h6>
                         <ol class="list-unstyled">
@@ -541,7 +576,7 @@ function copyToClipboard(text, event) {
     
     try {
         // Try to use the modern clipboard API
-        navigator.clipboard.writeText(text).then(function() {
+    navigator.clipboard.writeText(text).then(function() {
             showCopySuccess(event);
         }).catch(function(err) {
             // Fallback for older browsers
@@ -559,18 +594,60 @@ function copyToClipboard(text, event) {
 }
 
 function showCopySuccess(event) {
-    // Show a temporary success message
-    const button = event.target;
-    const originalText = button.innerHTML;
+        // Show a temporary success message
+        const button = event.target;
+        const originalText = button.innerHTML;
     const originalClasses = button.className;
     
-    button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
     button.className = 'btn btn-success btn-sm mt-3';
-    
-    setTimeout(function() {
-        button.innerHTML = originalText;
+        
+        setTimeout(function() {
+            button.innerHTML = originalText;
         button.className = originalClasses;
-    }, 2000);
+        }, 2000);
+}
+
+// STK Push AJAX logic
+if (document.getElementById('stkPushForm')) {
+    document.getElementById('stkPushForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('mpesaPhone').value;
+        const statusDiv = document.getElementById('stkPushStatus');
+        const spinner = document.getElementById('stkPushSpinner');
+        statusDiv.className = 'alert d-none';
+        spinner.classList.remove('d-none');
+
+        fetch("{% url 'initiate_stk_push' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: new URLSearchParams({
+                phone: phone,
+                amount: "{{ service_fee|floatformat:0 }}"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            spinner.classList.add('d-none');
+            if (data.ResponseCode === "0" || data.ResponseDescription) {
+                statusDiv.className = 'alert alert-success';
+                statusDiv.textContent = "Payment prompt sent! Check your phone to complete the payment.";
+            } else {
+                statusDiv.className = 'alert alert-danger';
+                statusDiv.textContent = data.error || "Failed to initiate payment. Please try again.";
+            }
+            statusDiv.classList.remove('d-none');
+        })
+        .catch(() => {
+            spinner.classList.add('d-none');
+            statusDiv.className = 'alert alert-danger';
+            statusDiv.textContent = "An error occurred. Please try again.";
+            statusDiv.classList.remove('d-none');
+        });
+    });
 }
 </script>
 {% endblock %} 
