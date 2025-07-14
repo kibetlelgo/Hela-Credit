@@ -16,7 +16,7 @@ class CountyAdmin(admin.ModelAdmin):
 class LoanApplicationAdmin(admin.ModelAdmin):
     list_display = [
         'application_id', 'user_link', 'status_badge', 'requested_amount', 
-        'repayment_period', 'created_at', 'actions'
+        'repayment_period', 'created_at', 'admin_actions'
     ]
     list_filter = ['status', 'gender', 'marital_status', 'county', 'created_at', 'approved_at']
     search_fields = ['application_id', 'user__username', 'user__first_name', 'user__last_name', 'phone_number']
@@ -71,7 +71,7 @@ class LoanApplicationAdmin(admin.ModelAdmin):
     status_badge.short_description = 'Status'
     status_badge.admin_order_field = 'status'
     
-    def actions(self, obj):
+    def admin_actions(self, obj):
         links = []
         if obj.status == 'submitted':
             links.append(f'<a href="#" onclick="approveLoan(\'{obj.application_id}\')" class="btn btn-sm btn-success">Approve</a>')
@@ -80,7 +80,7 @@ class LoanApplicationAdmin(admin.ModelAdmin):
         if obj.status == 'approved':
             links.append(f'<a href="#" onclick="disburseLoan(\'{obj.application_id}\')" class="btn btn-sm btn-primary">Disburse</a>')
         return mark_safe(' '.join(links))
-    actions.short_description = 'Actions'
+    admin_actions.short_description = 'Actions'
     
     def approve_loans(self, request, queryset):
         updated = queryset.update(status='approved')
