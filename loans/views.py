@@ -575,7 +575,12 @@ def lipa_na_mpesa_online(phone_number, amount, account_reference, transaction_de
         "TransactionDesc": transaction_desc
     }
     response = requests.post(api_url, json=payload, headers=headers)
-    return response.json()
+    print('Daraja STK Push status:', response.status_code)
+    print('Daraja STK Push text:', response.text)
+    try:
+        return response.json()
+    except Exception as e:
+        return {'error': f'Non-JSON response: {response.text}', 'status_code': response.status_code}
 
 
 @csrf_exempt
