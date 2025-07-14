@@ -16,7 +16,6 @@ from decimal import Decimal
 import datetime
 import requests
 import base64
-from datetime import datetime
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
