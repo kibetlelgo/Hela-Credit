@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}HelaCredit - Fast & Secure Loans{% endblock %}
+{% block title %}Hela Fund - Fast & Secure Loans{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </h1>
-                <p class="lead mb-4">HelaCredit provides fast, secure, and reliable loan services with competitive interest rates and flexible repayment terms.</p>
+                <p class="lead mb-4">Hela Fund provides fast, secure, and reliable loan services with competitive interest rates and flexible repayment terms.</p>
                 {% if not user.is_authenticated %}
                 <div class="d-flex gap-3">
                     <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">
@@ -49,6 +49,25 @@
                     <div class="icon-glow"></div>
                 </div>
             </div>
+        </div>
+        <!-- Stats Section (now inside hero-section) -->
+        <div class="hero-stats mt-7 mb-2">
+          <div class="stat">
+            <div class="stat-value">500K+</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">98%</div>
+            <div class="stat-label">Satisfaction</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Support Available</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">2M+</div>
+            <div class="stat-label">Paid Out</div>
+          </div>
         </div>
     </div>
 </section>
@@ -197,7 +216,7 @@
                                 <i class="fas fa-star"></i>
                             </span>
                         </div>
-                        <p class="card-text">“HelaCredit approved my loan in just a few hours and the money was in my M-Pesa the same day. The process was so easy and transparent!”</p>
+                        <p class="card-text">“Hela Fund approved my loan in just a few hours and the money was in my M-Pesa the same day. The process was so easy and transparent!”</p>
                         <div class="mt-4">
                             <h6 class="mb-0 fw-bold">Mary Wanjiku</h6>
                             <small class="text-muted">Nakuru County</small>
@@ -533,6 +552,43 @@ document.addEventListener('DOMContentLoaded', function() {
     .carousel-text {
         font-size: 1.5rem;
     }
+}
+
+/* Stats Section Styles */
+.hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 1.5rem;
+  max-width: 400px;
+  margin: 5rem auto 0 auto; /* Increased top margin for more space below buttons */
+  text-align: center;
+  /* Remove background, border-radius, box-shadow */
+  padding: 0;
+}
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+.stat-label {
+  font-size: 1.1rem;
+  color: #e0e7ef;
+}
+@media (min-width: 768px) {
+  .hero-stats {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 900px;
+    gap: 2rem 3rem;
+    margin: 3rem auto 0 auto;
+    padding: 0;
+  }
+  .stat-value {
+    font-size: 2.5rem;
+  }
+  .stat-label {
+    font-size: 1.15rem;
+  }
 }
 </style>
 {% endblock %} 

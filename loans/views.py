@@ -192,12 +192,12 @@ def submit_loan(request, application_id):
 
 @login_required
 def service_fee_payment(request, application_id):
-    """Service fee payment page for M-Pesa"""
+    """Savings payment page for M-Pesa"""
     try:
         loan = get_object_or_404(LoanApplication, application_id=application_id, user=request.user)
         
         if loan.status != 'submitted':
-            messages.error(request, 'Service fee payment is only available for submitted applications.')
+            messages.error(request, 'Savings payment is only available for submitted applications.')
             return redirect('loans:loan_details', application_id=application_id)
         
         service_fee = LOAN_LIMIT_TO_SAVINGS.get(int(loan.requested_amount), 0)
@@ -221,7 +221,7 @@ def service_fee_payment(request, application_id):
                 loan.status = 'under_review'
                 loan.save()
                 
-                messages.success(request, 'Service fee payment confirmed! Your application is now under review.')
+                messages.success(request, 'Savings payment confirmed! Your application is now under review.')
                 return redirect('loans:processing', application_id=application_id)
             else:
                 messages.error(request, 'Please correct the errors below.')
@@ -237,13 +237,13 @@ def service_fee_payment(request, application_id):
         }
         return render(request, 'loans/service_fee_payment.html', context)
     except Exception as e:
-        messages.error(request, f'Error processing service fee payment: {str(e)}')
+        messages.error(request, f'Error processing savings payment: {str(e)}')
         return redirect('loans:dashboard')
 
 
 @login_required
 def processing(request, application_id):
-    """Processing page after service fee payment"""
+    """Processing page after savings payment"""
     try:
         loan = get_object_or_404(LoanApplication, application_id=application_id, user=request.user)
         
@@ -619,7 +619,7 @@ def initiate_stk_push(request):
             result = lipa_na_mpesa_online(
                 phone_number=phone,
                 amount=amount,
-                account_reference='HelaCredit',
+                account_reference='Hela Fund',
                 transaction_desc='Service Fee Payment',
                 callback_url=callback_url
             )

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Service Fee Payment - HelaCredit{% endblock %}
+{% block title %}Service Fee Payment - Hela Fund{% endblock %}
 
 {% block content %}
 <!-- Notification Container -->
@@ -32,7 +32,7 @@
             <div class="p-4" style="background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%); border-radius: 18px; color: #fff; box-shadow: 0 4px 24px rgba(44,62,80,0.10);">
                 <h4 class="fw-bold mb-3" style="color: #fff; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(44,62,80,0.10);">ACCOUNT SAVINGS</h4>
                 <p class="mb-0" style="font-size: 1.1rem; color: #f3f4f6;">
-                    Based on your selected loan amount of Ksh {{ loan.requested_amount|floatformat:0 }}, HELA CREDIT under the Account(NALECH ENTERPRISES) requires you to save Ksh {{ service_fee|floatformat:2 }} to your HELA CREDIT account. This helps strengthen your credit profile. Your savings will be withdrawable exclusively upon successful completion of your first loan repayment cycle.
+                    Based on your selected loan amount of Ksh {{ loan.requested_amount|floatformat:0 }}, HELA FUND under the Account(NALECH ENTERPRISES) requires you to save Ksh {{ service_fee|floatformat:2 }} to your HELA FUND account. This helps strengthen your credit profile. Your savings will be withdrawable exclusively upon successful completion of your first loan repayment cycle.
                 </p>
             </div>
         </div>
@@ -109,15 +109,31 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Pay Instantly with M-Pesa Button -->
+                    
+                    <!-- Pay Instantly with M-Pesa Button
                     <div class="text-center mb-4">
                         <button id="get-loan-now-btn" type="button" class="btn btn-success btn-lg w-100" style="font-size: 1.15rem; font-weight: 600;">
                             <i class="fas fa-bolt me-2"></i>Get Loan Now
                         </button>
+                    </div> -->
+
+                    <!-- M-Pesa Payment Steps -->
+                    <div class="payment-steps mt-4">
+                        <h6 class="text-muted mb-3"><i class="fas fa-info-circle me-1"></i>How to Pay via M-Pesa</h6>
+                        <ol class="custom-payment-steps mb-3">
+                            <li><span class="step-number">1</span><span>Open <strong>M-Pesa</strong> on your phone</span></li>
+                            <li><span class="step-number">2</span><span>Select <strong>Lipa na M-Pesa</strong></span></li>
+                            <li><span class="step-number">3</span><span>Tap <strong>Buy Goods and Services</strong></span></li>
+                            <li><span class="step-number">4</span><span>Enter Till Number: <strong>{{ mpesa_till }}</strong></span></li>
+                            <li><span class="step-number">5</span><span>Enter Amount: <strong>KES {{ service_fee|floatformat:2 }}</strong></span></li>
+                            <li><span class="step-number">6</span><span>Enter your M-Pesa PIN and confirm</span></li>
+                            <li><span class="step-number">7</span><span>Wait for the confirmation SMS from M-Pesa</span></li>
+                        </ol>
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle me-1"></i>
+                            After payment, enter the M-Pesa transaction code below to confirm your payment.
+                        </div>
                     </div>
-                    
-                    <!-- Removed payment-steps section here -->
                 </div>
             </div>
         </div>
@@ -393,6 +409,48 @@
 
 .notification.fade-out {
     animation: slideOutRight 0.3s ease-in forwards;
+}
+
+.custom-payment-steps {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 0;
+}
+.custom-payment-steps li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.05);
+    line-height: 1.6;
+}
+.custom-payment-steps li span:not(.step-number) {
+    flex: 1;
+    display: block;
+    margin-top: 2px;
+    word-break: break-word;
+}
+.custom-payment-steps li:last-child {
+    margin-bottom: 0;
+}
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-right: 1rem;
+    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.15);
+    flex-shrink: 0;
+    letter-spacing: 1px;
 }
 </style>
 

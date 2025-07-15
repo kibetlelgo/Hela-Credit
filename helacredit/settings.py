@@ -163,7 +163,7 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'alert-success',
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
-}
+} 
 
 # --- Daraja (M-Pesa) API Settings ---
 DARAJA_CONSUMER_KEY = os.getenv('DARAJA_CONSUMER_KEY')

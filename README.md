@@ -1,6 +1,6 @@
-# HelaCredit - Modern Loan Application System
+# Hela Fund - Modern Loan Application System
 
-A modern, secure, and user-friendly loan application system built with Django. HelaCredit provides a complete solution for managing loan applications, payments, and disbursements.
+A modern, secure, and user-friendly loan application system built with Django. Hela Fund provides a complete solution for managing loan applications, payments, and disbursements.
 
 ## Features
 
@@ -195,4 +195,4 @@ For support and questions, please contact the development team.
 
 ---
 
-**HelaCredit** - Making loans accessible, secure, and simple. 
+**Hela Fund** - Making loans accessible, secure, and simple. 
