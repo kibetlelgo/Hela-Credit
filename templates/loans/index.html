@@ -74,56 +74,72 @@
 
 <!-- How It Works Section -->
 <section class="py-5 bg-light">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col-12">
-                <h2 class="fw-bold">How It Works</h2>
-                <p class="lead text-muted">Simple steps to get your loan</p>
-            </div>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="text-center">
-                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                        <span class="fw-bold fs-4">1</span>
-                    </div>
-                    <h5>Register</h5>
-                    <p class="text-muted">Create your account in minutes with basic information</p>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="text-center">
-                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                        <span class="fw-bold fs-4">2</span>
-                    </div>
-                    <h5>Apply</h5>
-                    <p class="text-muted">Fill out the loan application with your details and requirements</p>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="text-center">
-                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                        <span class="fw-bold fs-4">3</span>
-                    </div>
-                    <h5>Get Approved</h5>
-                    <p class="text-muted">Our team reviews your application and approves within hours</p>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="text-center">
-                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                        <span class="fw-bold fs-4">4</span>
-                    </div>
-                    <h5>Receive Money</h5>
-                    <p class="text-muted">Get your loan disbursed directly to your M-Pesa or bank account</p>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="fw-bold">How It Works</h2>
+        <p class="lead text-muted">Simple steps to get your loan</p>
+      </div>
     </div>
+    <!-- Mobile Card Style -->
+    <div class="how-it-works-cards">
+      <div class="how-card">
+        <div class="how-card-title">Quick Approval</div>
+        <div class="how-card-desc">Get pre-approved in minutes with our streamlined digital process</div>
+      </div>
+      <div class="how-card">
+        <div class="how-card-title">Flexible Terms</div>
+        <div class="how-card-desc">Choose loan terms from 1 to 12 months that fit your budget</div>
+      </div>
+      <div class="how-card">
+        <div class="how-card-title">Secure & Trusted</div>
+        <div class="how-card-desc">Your information is protected with bank-level security systems</div>
+      </div>
+      <div class="how-card">
+        <div class="how-card-title">Easy Repayment</div>
+        <div class="how-card-desc">Convenient repayment options through M-PESA</div>
+      </div>
+    </div>
+    <!-- Desktop Grid Style (unchanged) -->
+    <div class="row g-4 how-it-works-grid">
+      <div class="col-md-3">
+        <div class="text-center">
+          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <span class="fw-bold fs-4">1</span>
+          </div>
+          <h5>Register</h5>
+          <p class="text-muted">Create your account in minutes with basic information</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-center">
+          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <span class="fw-bold fs-4">2</span>
+          </div>
+          <h5>Apply</h5>
+          <p class="text-muted">Fill out the loan application with your details and requirements</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-center">
+          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <span class="fw-bold fs-4">3</span>
+          </div>
+          <h5>Get Approved</h5>
+          <p class="text-muted">Our team reviews your application and approves within hours</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-center">
+          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <span class="fw-bold fs-4">4</span>
+          </div>
+          <h5>Receive Money</h5>
+          <p class="text-muted">Get your loan disbursed directly to your M-Pesa or bank account</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Loan Calculator Section -->
@@ -589,6 +605,43 @@ document.addEventListener('DOMContentLoaded', function() {
   .stat-label {
     font-size: 1.15rem;
   }
+}
+
+/* How It Works Steps Card Style for Mobile */
+@media (max-width: 768px) {
+  .how-it-works-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .how-card {
+    background: #fff;
+    border: 2px solid #2563eb;
+    border-radius: 16px;
+    padding: 1.2rem 1rem;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.04);
+    margin: 0 0.2rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .how-card-title {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.3rem;
+  }
+  .how-card-desc {
+    color: #555;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  /* Hide the old grid on mobile */
+  .how-it-works-grid { display: none !important; }
+}
+@media (min-width: 769px) {
+  .how-it-works-cards { display: none !important; }
 }
 </style>
 {% endblock %} 
