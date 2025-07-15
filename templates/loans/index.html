@@ -84,18 +84,22 @@
     <!-- Mobile Card Style -->
     <div class="how-it-works-cards">
       <div class="how-card">
+        <span class="how-card-num">1</span>
         <div class="how-card-title">Register</div>
         <div class="how-card-desc">Create your account in minutes with basic information</div>
       </div>
       <div class="how-card">
+        <span class="how-card-num">2</span>
         <div class="how-card-title">Apply</div>
         <div class="how-card-desc">Fill out the loan application with your details and requirements</div>
       </div>
       <div class="how-card">
+        <span class="how-card-num">3</span>
         <div class="how-card-title">Get Aprooved</div>
         <div class="how-card-desc">Our team reviews your application and approves within hours</div>
       </div>
       <div class="how-card">
+        <span class="how-card-num">4</span>
         <div class="how-card-title">Receive Money</div>
         <div class="how-card-desc">Get your loan disbursed directly to your M-Pesa or bank account</div>
       </div>
@@ -625,12 +629,26 @@ document.addEventListener('DOMContentLoaded', function() {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
+  }
+  .how-card-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    margin-right: 0.7rem;
+    box-shadow: 0 1px 4px rgba(37,99,235,0.10);
   }
   .how-card-title {
-    color: #2563eb;
-    font-weight: 700;
-    font-size: 1.15rem;
-    margin-bottom: 0.3rem;
+    display: inline-block;
+    vertical-align: middle;
   }
   .how-card-desc {
     color: #555;
