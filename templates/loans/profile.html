@@ -411,20 +411,19 @@
 
 @media (max-width: 767.98px) {
   .profile-stats-row {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-    padding-bottom: 0.5rem;
+    margin-left: 0;
+    margin-right: 0;
+    padding-bottom: 0;
   }
   .profile-stats-row > div[class^='col-'] {
-    flex: 0 0 80%;
-    max-width: 80%;
-    min-width: 220px;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    flex: unset;
+    max-width: unset;
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 @media (min-width: 768px) {
