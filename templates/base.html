@@ -267,13 +267,17 @@
             
             <!-- Mobile Profile Icon (visible only on mobile) -->
             {% if user.is_authenticated %}
-            <div class="d-lg-none ms-auto">
-                <a href="{% url 'loans:profile' %}" class="nav-link p-0" style="display: flex; align-items: center;">
-                    <span class="mobile-profile-avatar d-inline-flex align-items-center justify-content-center me-1">
+            <div class="d-lg-none ms-auto dropdown">
+                <a href="#" class="nav-link p-0 dropdown-toggle" id="mobileProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
+                    <span class="mobile-profile-avatar d-inline-flex align-items-center justify-content-center">
                         <i class="fas fa-user"></i>
                     </span>
-                    <span class="mobile-profile-name">{{ user.first_name|default:user.username }}</span>
                 </a>
+                <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="mobileProfileDropdown">
+                    <li><a class="dropdown-item" href="{% url 'loans:profile' %}">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                </ul>
             </div>
             {% endif %}
             

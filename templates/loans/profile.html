@@ -22,7 +22,7 @@
     </div>
 
     <!-- Profile Statistics -->
-    <div class="row mb-4">
+    <div class="row mb-4 profile-stats-row">
         <div class="col-md-4">
             <div class="card text-center">
                 <div class="card-body">
@@ -407,6 +407,41 @@
 
 .btn-lg {
     padding: 1rem 2rem;
+}
+
+@media (max-width: 767.98px) {
+  .profile-stats-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 1rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .profile-stats-row > div[class^='col-'] {
+    flex: 0 0 80%;
+    max-width: 80%;
+    min-width: 220px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .profile-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .profile-stats-row > div[class^='col-'] {
+    flex: unset;
+    max-width: unset;
+    min-width: unset;
+    padding-left: unset;
+    padding-right: unset;
+  }
 }
 </style>
 {% endblock %} 
