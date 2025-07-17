@@ -152,7 +152,7 @@
                             </form>
                         {% elif loan.status == 'submitted' %}
                             <a href="{% url 'loans:service_fee_payment' loan.application_id %}" class="btn btn-warning">
-                                <i class="fas fa-credit-card me-2"></i>Pay Service Fee
+                                <i class="fas fa-credit-card me-2"></i>Save Now
                             </a>
                         {% elif loan.status == 'approved' %}
                             <a href="{% url 'loans:payment_page' loan.application_id %}" class="btn btn-primary">
@@ -340,42 +340,42 @@
 // Dummy loan activity notifications
 const notifications = [
     {
-        message: "+254***456 has borrowed KES 25,000",
+        message: "+254***456 has received KES 25,000",
         time: "2 minutes ago",
         type: "success"
     },
     {
-        message: "+254***789 has borrowed KES 15,000",
+        message: "+254***789 has received KES 15,000",
         time: "3 minutes ago",
         type: "success"
     },
     {
-        message: "+254***234 has borrowed KES 35,000",
+        message: "+254***234 has received KES 35,000",
         time: "5 minutes ago",
         type: "success"
     },
     {
-        message: "+254***567 has borrowed KES 20,000",
+        message: "+254***567 has received KES 20,000",
         time: "7 minutes ago",
         type: "success"
     },
     {
-        message: "+254***890 has borrowed KES 30,000",
+        message: "+254***890 has received KES 30,000",
         time: "10 minutes ago",
         type: "success"
     },
     {
-        message: "+254***123 has borrowed KES 40,000",
+        message: "+254***123 has received KES 40,000",
         time: "12 minutes ago",
         type: "success"
     },
     {
-        message: "+254***345 has borrowed KES 18,000",
+        message: "+254***345 has received KES 18,000",
         time: "15 minutes ago",
         type: "success"
     },
     {
-        message: "+254***678 has borrowed KES 22,000",
+        message: "+254***678 has received KES 22,000",
         time: "18 minutes ago",
         type: "success"
     }

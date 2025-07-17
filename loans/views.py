@@ -27,6 +27,7 @@ LOAN_LIMIT_TO_SAVINGS = {
     15000: 340,
     20000: 425,
     30000: 520,
+    40000: 635,
     50000: 755,
 }
 
@@ -95,7 +96,7 @@ def apply_loan_step1(request):
 def apply_loan_step2(request):
     step1_data = request.session.get('loan_step1')
     if not step1_data:
-        return redirect('loans:apply_loan_step1')
+        return redirect('loans:apply_loan')
     # Convert date_of_birth back to date object
     if 'date_of_birth' in step1_data and isinstance(step1_data['date_of_birth'], str):
         step1_data['date_of_birth'] = datetime.date.fromisoformat(step1_data['date_of_birth'])
