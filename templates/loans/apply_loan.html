@@ -21,7 +21,9 @@
                                 <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number <span class="text-danger">*</span></label>
                                 {{ form.phone_number }}
                                 {% if form.phone_number.errors %}
-                                <div class="text-danger small">{{ form.phone_number.errors.0 }}</div>
+                                {% if form.phone_number.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.phone_number.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                                 {% if form.phone_number.help_text %}
                                 <div class="form-text">{{ form.phone_number.help_text }}</div>
@@ -32,7 +34,9 @@
                                 <label for="{{ form.id_number.id_for_label }}" class="form-label">ID Number <span class="text-danger">*</span></label>
                                 {{ form.id_number }}
                                 {% if form.id_number.errors %}
-                                <div class="text-danger small">{{ form.id_number.errors.0 }}</div>
+                                {% if form.id_number.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.id_number.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                                 {% if form.id_number.help_text %}
                                 <div class="form-text">{{ form.id_number.help_text }}</div>
@@ -45,7 +49,9 @@
                                 <label for="{{ form.gender.id_for_label }}" class="form-label">Gender <span class="text-danger">*</span></label>
                                 {{ form.gender }}
                                 {% if form.gender.errors %}
-                                <div class="text-danger small">{{ form.gender.errors.0 }}</div>
+                                {% if form.gender.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.gender.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                             
@@ -53,7 +59,9 @@
                                 <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth <span class="text-danger">*</span></label>
                                 {{ form.date_of_birth }}
                                 {% if form.date_of_birth.errors %}
-                                <div class="text-danger small">{{ form.date_of_birth.errors.0 }}</div>
+                                {% if form.date_of_birth.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.date_of_birth.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -63,7 +71,9 @@
                                 <label for="{{ form.marital_status.id_for_label }}" class="form-label">Marital Status <span class="text-danger">*</span></label>
                                 {{ form.marital_status }}
                                 {% if form.marital_status.errors %}
-                                <div class="text-danger small">{{ form.marital_status.errors.0 }}</div>
+                                {% if form.marital_status.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.marital_status.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                             
@@ -71,7 +81,9 @@
                                 <label for="{{ form.county.id_for_label }}" class="form-label">County <span class="text-danger">*</span></label>
                                 {{ form.county }}
                                 {% if form.county.errors %}
-                                <div class="text-danger small">{{ form.county.errors.0 }}</div>
+                                {% if form.county.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.county.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -81,7 +93,9 @@
                                 <label for="{{ form.next_of_kin.id_for_label }}" class="form-label">Next of Kin <span class="text-danger">*</span></label>
                                 {{ form.next_of_kin }}
                                 {% if form.next_of_kin.errors %}
-                                <div class="text-danger small">{{ form.next_of_kin.errors.0 }}</div>
+                                {% if form.next_of_kin.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.next_of_kin.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                                 {% if form.next_of_kin.help_text %}
                                 <div class="form-text">{{ form.next_of_kin.help_text }}</div>
@@ -92,7 +106,9 @@
                                 <label for="{{ form.next_of_kin_phone.id_for_label }}" class="form-label">Next of Kin Phone <span class="text-danger">*</span></label>
                                 {{ form.next_of_kin_phone }}
                                 {% if form.next_of_kin_phone.errors %}
-                                <div class="text-danger small">{{ form.next_of_kin_phone.errors.0 }}</div>
+                                {% if form.next_of_kin_phone.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.next_of_kin_phone.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                                 {% if form.next_of_kin_phone.help_text %}
                                 <div class="form-text">{{ form.next_of_kin_phone.help_text }}</div>
@@ -105,7 +121,9 @@
                                 <label for="{{ form.education_level.id_for_label }}" class="form-label">Level of Education <span class="text-danger">*</span></label>
                                 {{ form.education_level }}
                                 {% if form.education_level.errors %}
-                                <div class="text-danger small">{{ form.education_level.errors.0 }}</div>
+                                {% if form.education_level.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.education_level.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                                 {% if form.education_level.help_text %}
                                 <div class="form-text">{{ form.education_level.help_text }}</div>
@@ -122,14 +140,18 @@
                                 <label for="{{ form.employment_status.id_for_label }}" class="form-label">Employment Status <span class="text-danger">*</span></label>
                                 {{ form.employment_status }}
                                 {% if form.employment_status.errors %}
-                                <div class="text-danger small">{{ form.employment_status.errors.0 }}</div>
+                                {% if form.employment_status.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.employment_status.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.monthly_income.id_for_label }}" class="form-label">Monthly Income (KES) <span class="text-danger">*</span></label>
                                 {{ form.monthly_income }}
                                 {% if form.monthly_income.errors %}
-                                <div class="text-danger small">{{ form.monthly_income.errors.0 }}</div>
+                                {% if form.monthly_income.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.monthly_income.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -138,7 +160,9 @@
                                 <label for="{{ form.loan_purpose.id_for_label }}" class="form-label">Loan Purpose <span class="text-danger">*</span></label>
                                 {{ form.loan_purpose }}
                                 {% if form.loan_purpose.errors %}
-                                <div class="text-danger small">{{ form.loan_purpose.errors.0 }}</div>
+                                {% if form.loan_purpose.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.loan_purpose.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -148,7 +172,9 @@
                                 <label for="{{ form.requested_amount.id_for_label }}" class="form-label">Loan Amount (KES) <span class="text-danger">*</span></label>
                                 {{ form.requested_amount }}
                                 {% if form.requested_amount.errors %}
-                                <div class="text-danger small">{{ form.requested_amount.errors.0 }}</div>
+                                {% if form.requested_amount.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.requested_amount.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                             </div>
                             
@@ -156,7 +182,9 @@
                                 <label for="{{ form.repayment_period.id_for_label }}" class="form-label">Repayment Period (Months) <span class="text-danger">*</span></label>
                                 {{ form.repayment_period }}
                                 {% if form.repayment_period.errors %}
-                                <div class="text-danger small">{{ form.repayment_period.errors.0 }}</div>
+                                {% if form.repayment_period.errors.0 != 'This field is required.' %}
+                                    <div class="text-danger small">{{ form.repayment_period.errors.0 }}</div>
+                                {% endif %}
                                 {% endif %}
                                 {% if form.repayment_period.help_text %}
                                 <div class="form-text">{{ form.repayment_period.help_text }}</div>
@@ -345,6 +373,13 @@ document.addEventListener('DOMContentLoaded', function() {
 .btn:disabled {
     opacity: 0.65;
     cursor: not-allowed;
+}
+
+/* Make select placeholder lighter */
+select.form-select option[value=""],
+select.form-control option[value=""] {
+    color: #b0b0b0;
+    font-weight: 400;
 }
 </style>
 {% endblock %} 

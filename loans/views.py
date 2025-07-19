@@ -106,11 +106,13 @@ def apply_loan_step2(request):
     if request.method == 'POST':
         form = LoanDetailsForm(request.POST)
         if form.is_valid():
+            # Remove duplicate keys from form.cleaned_data that are already in step1_data
+            cleaned_data = {k: v for k, v in form.cleaned_data.items() if k not in step1_data}
             loan = LoanApplication(
                 user=request.user,
                 application_id=uuid.uuid4(),
                 **step1_data,
-                **form.cleaned_data
+                **cleaned_data
             )
             loan.save()
             del request.session['loan_step1']

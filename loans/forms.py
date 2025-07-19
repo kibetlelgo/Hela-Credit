@@ -116,15 +116,62 @@ class LoanApplicationForm(forms.ModelForm):
         return phone
 
     monthly_income = forms.ChoiceField(
-        choices=INCOME_CHOICES,
+        choices=[('', '')] + INCOME_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Monthly Income (KES)'
     )
 
     loan_purpose = forms.ChoiceField(
-        choices=LOAN_PURPOSE_CHOICES,
+        choices=[('', '')] + LOAN_PURPOSE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Loan Purpose'
+    )
+
+    repayment_period = forms.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(60)],
+        widget=forms.Select(
+            choices=[('', '')] + [(i, f"{i} months") for i in range(1, 61)],
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    education_level = forms.ChoiceField(
+        choices=[('', '')] + LoanApplication.EDUCATION_LEVEL_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        help_text="Select your highest level of education"
+    )
+    employment_status = forms.ChoiceField(
+        choices=[('', '')] + LoanApplication.EMPLOYMENT_STATUS_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+    )
+    gender = forms.ChoiceField(
+        choices=[('', '')] + LoanApplication.GENDER_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    marital_status = forms.ChoiceField(
+        choices=[('', '')] + LoanApplication.MARITAL_STATUS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    county = forms.ModelChoiceField(
+        queryset=County.objects.all().order_by('name'),
+        empty_label='',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    next_of_kin = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control'
+        })
+    )
+    next_of_kin_phone = forms.CharField(
+        max_length=15,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control'
+        })
     )
 
 
@@ -202,7 +249,7 @@ class MpesaPaymentForm(forms.Form):
         max_length=15,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter M-Pesa number (e.g., 0712345678)'
+            'placeholder': 'Enter M-Pesa number '
         })
     )
     
@@ -238,7 +285,7 @@ class MpesaServiceFeeForm(forms.Form):
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter M-Pesa transaction code (e.g., QK123456789)',
+            'placeholder': 'Enter M-Pesa transaction code',
             'pattern': '[A-Z0-9]+',
             'title': 'Enter the transaction code from your M-Pesa message'
         }),
@@ -281,10 +328,8 @@ class UserProfileForm(forms.ModelForm):
     phone_number = forms.CharField(
         max_length=15,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'e.g., 0712345678'
-        }),
-        help_text="Enter phone number (e.g., 0712345678)"
+            'class': 'form-control'
+        })
     )
     id_number = forms.CharField(
         max_length=20,
@@ -310,31 +355,30 @@ class UserProfileForm(forms.ModelForm):
     )
     county = forms.ModelChoiceField(
         queryset=County.objects.all().order_by('name'),
+        empty_label='',
         widget=forms.Select(attrs={'class': 'form-select'})
     )
     next_of_kin = forms.CharField(
         max_length=100,
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter your next of kin\'s full name'
-        }),
-        help_text="Enter your next of kin's full name"
+            'class': 'form-control'
+        })
     )
     next_of_kin_phone = forms.CharField(
         max_length=15,
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'e.g., 0712345678'
-        }),
-        help_text="Enter next of kin's phone number (e.g., 0712345678)"
+            'class': 'form-control'
+        })
     )
     education_level = forms.ChoiceField(
         choices=LoanApplication.EDUCATION_LEVEL_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-select'}),
-        help_text="Select your highest level of education"
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    employment_status = forms.ChoiceField(
+        choices=LoanApplication.EMPLOYMENT_STATUS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
 
     class Meta:
@@ -405,7 +449,7 @@ class LoanDetailsForm(forms.ModelForm):
         ('personal', 'Personal'),
     ]
     REQUESTED_AMOUNT_CHOICES = [
-        ('', 'Choose amount'),
+        ('', ''),
         ('5000',  'Limit Ksh 5000  - (Savings amount: Ksh 160)'),
         ('10000', 'Limit Ksh 10000 - (Savings amount: Ksh 270)'),
         ('15000', 'Limit Ksh 15000 - (Savings amount: Ksh 340)'),
@@ -416,26 +460,38 @@ class LoanDetailsForm(forms.ModelForm):
     ]
     requested_amount = forms.ChoiceField(
         choices=REQUESTED_AMOUNT_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select', 'placeholder': 'Choose amount'}),
+        widget=forms.Select(attrs={'class': 'form-select'}),
         label='Loan Limit'
     )
-    repayment_period = forms.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(60)],
-        widget=forms.Select(
-            choices=[(i, f"{i} months") for i in range(1, 13)],
-            attrs={'class': 'form-control'}
-        )
-    )
     monthly_income = forms.ChoiceField(
-        choices=INCOME_CHOICES,
+        choices=[('', '')] + INCOME_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Monthly Income (KES)'
     )
     loan_purpose = forms.ChoiceField(
-        choices=LOAN_PURPOSE_CHOICES,
+        choices=[('', '')] + LOAN_PURPOSE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Loan Purpose'
     )
+    repayment_period = forms.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(60)],
+        widget=forms.Select(
+            choices=[('', '')] + [(i, f"{i} months") for i in range(1, 13)],
+            attrs={'class': 'form-control'}
+        )
+    )
+    education_level = forms.ChoiceField(
+        choices=[('', '')] + LoanApplication.EDUCATION_LEVEL_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        help_text="Select your highest level of education"
+    )
+    employment_status = forms.ChoiceField(
+        choices=[('', '')] + LoanApplication.EMPLOYMENT_STATUS_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+    )
+    # Removed gender, marital_status, county, next_of_kin, next_of_kin_phone
     class Meta:
         model = LoanApplication
         fields = [
