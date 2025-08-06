@@ -13,6 +13,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4968460970100232"
+     crossorigin="anonymous"></script>
     <!-- Custom CSS -->
     <style>
         :root {
@@ -253,6 +256,41 @@
         @media (max-width: 991.98px) {
             .d-lg-flex { display: none !important; }
         }
+        
+        /* Header Banner Ad Styling */
+        .ad-banner-header {
+            width: 100%;
+            max-width: 728px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 15px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .ad-banner-header ins {
+            display: block !important;
+            margin: 0 auto;
+        }
+        
+        /* Mobile Responsive for Header Banner */
+        @media (max-width: 768px) {
+            .ad-banner-header {
+                max-width: 320px;
+                padding: 10px 0;
+                margin-bottom: 15px;
+            }
+        }
+        
+        /* Hide banner on very small screens */
+        @media (max-width: 480px) {
+            .ad-banner-header {
+                display: none;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -332,21 +370,33 @@
             </div>
         </div>
     </nav>
-
-    <!-- Messages -->
-    {% if messages %}
-    <div class="container mt-3">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Main Content -->
     <main style="padding-top: 4.5rem;">
+        <!-- Header Banner Ad -->
+        <div class="ad-banner-header">
+            <!-- HelaFund -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4968460970100232"
+                 data-ad-slot="5394143854"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        
+        <!-- Messages -->
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
         {% block content %}{% endblock %}
     </main>
 

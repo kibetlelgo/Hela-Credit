@@ -16,9 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from django.http import HttpResponse
+import os
+
+def ads_txt(request):
+    content = "google.com, pub-4968460970100232, DIRECT, f08c47fec0942fa0"
+    return HttpResponse(content, content_type='text/plain')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('loans.urls')),
     path('accounts/', include('accounts.urls')),
+    path('ads.txt', ads_txt, name='ads_txt'),
 ] 
