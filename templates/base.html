@@ -282,6 +282,13 @@
                 max-width: 320px;
                 padding: 10px 0;
                 margin-bottom: 15px;
+                min-height: 50px; /* Ensure minimum height for horizontal banner */
+            }
+            
+            .ad-banner-header ins {
+                min-height: 50px; /* Force horizontal banner height */
+                display: block !important;
+                margin: 0 auto;
             }
         }
         
@@ -378,7 +385,7 @@
                  style="display:block"
                  data-ad-client="ca-pub-4968460970100232"
                  data-ad-slot="5394143854"
-                 data-ad-format="auto"
+                 data-ad-format="horizontal"
                  data-full-width-responsive="true"></ins>
             <script>
                  (adsbygoogle = window.adsbygoogle || []).push({});
