@@ -22,12 +22,12 @@ import json
 
 
 LOAN_LIMIT_TO_SAVINGS = {
-    5000: 160,
-    10000: 270,
-    15000: 340,
-    20000: 425,
-    30000: 520,
-    40000: 635,
+    5000: 190,
+    10000: 280,
+    15000: 350,
+    20000: 465,
+    30000: 530,
+    40000: 645,
     50000: 755,
 }
 
@@ -235,7 +235,7 @@ def service_fee_payment(request, application_id):
             'loan': loan,
             'service_fee': service_fee,
             'form': form,
-            'mpesa_till': '5633760',
+            'mpesa_till': '5671240',
             'phone_number': loan.phone_number,
         }
         return render(request, 'loans/service_fee_payment.html', context)

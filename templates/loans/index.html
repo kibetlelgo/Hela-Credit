@@ -46,7 +46,7 @@
             </div>
             <div class="col-lg-6 text-center">
                 <div class="hero-icon-container">
-                  <img src="{% static 'images/bills.png' %}" alt="Money in hand" class="hero-money-img">
+                  <img src="{% static 'images/fund.png' %}" alt="Money in hand" class="hero-money-img">
                 </div>
             </div>
         </div>
@@ -716,11 +716,14 @@ document.addEventListener('DOMContentLoaded', function() {
   50% { opacity: 0.7; transform: scale(1.08);}
 }
 .hero-money-img {
-  max-width: 220px;
+  max-width: 720px;
   width: 100%;
   height: auto;
-  filter: brightness(0) invert(1) drop-shadow(0 4px 24px #2563eb33);
+  border-radius: 20px;
+  filter: drop-shadow(0 8px 32px rgba(37, 99, 235, 0.8)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(37, 99, 235, 0.7);
   animation: moneyFloat 3s ease-in-out infinite;
+  margin-left: 4rem;
 }
 @keyframes moneyFloat {
   0%, 100% { transform: translateY(0); }
